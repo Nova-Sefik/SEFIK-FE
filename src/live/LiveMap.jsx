@@ -31,6 +31,8 @@ function Camera({ target, fitLines, fitPoints }) {
 function Legend({ mode, layer }) {
   const items = mode === 'load'
     ? [['#fdd663', 'under 70%'], ['#f9ab00', '70–85%'], ['#e8710a', '85–100%'], ['#d93025', 'over capacity']]
+    : mode === 'journeys'
+      ? [['#4a3aa7', 'journey path'], ['#1a73e8', 'first tap'], ['#188038', 'last tap / destination']]
     : mode === 'golden'
       ? [['#c48c00', 'strong'], ['#e2aa1e', 'viable'], ['#e8c878', 'weak']]
       : mode === 'transfers'
@@ -40,6 +42,8 @@ function Legend({ mode, layer }) {
         : [['#d2e3fc', 'lower demand'], ['#4285f4', 'high demand'], ['#174ea6', 'highest demand']]
   const note = mode === 'load'
     ? 'Line colour = estimated peak load ÷ places offered.'
+    : mode === 'journeys'
+      ? 'Width = journeys. Lines join tap locations in order; they are not the vehicle route.'
     : mode === 'golden'
       ? 'Width = projected riders/day. Grey paths show how selected-route passengers travel today.'
       : mode === 'transfers'
@@ -49,7 +53,7 @@ function Legend({ mode, layer }) {
         : `${layer === 'hex' ? 'Area colour' : 'Circle area'} = boardings at the selected hour.`
   return (
     <div className="pointer-events-none absolute bottom-4 left-4 z-[500] max-w-64 rounded-xl border border-line bg-surface/95 p-3 text-[11px] shadow-float">
-      <p className="font-medium text-ink">{mode === 'load' ? 'Load vs capacity' : mode === 'golden' ? 'Best direct routes' : mode === 'transfers' ? 'Transfer quality' : mode === 'anomalies' ? 'Observed vs expected' : 'Live demand'}</p>
+      <p className="font-medium text-ink">{mode === 'journeys' ? 'Journey paths' : mode === 'load' ? 'Load vs capacity' : mode === 'golden' ? 'Best direct routes' : mode === 'transfers' ? 'Transfer quality' : mode === 'anomalies' ? 'Observed vs expected' : 'Live demand'}</p>
       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-ink-3">
         {items.map(([color, label]) => <span key={label} className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />{label}</span>)}
       </div>
@@ -63,7 +67,7 @@ export default function LiveMap() {
     meta, hex, stops, transfers, golden, scales, mode, layer, hour, day, selectedStop, openStop,
     selectedLine, setSelectedLine, selectedTransfer, setSelectedTransfer,
     selectedFlow, setSelectedFlow, selectedGolden, setSelectedGolden,
-    selectedAlert, anomalies, whatif,
+    selectedAlert, anomalies, whatif, journeyTraffic, selectedPath, setSelectedPath,
   } = useLiveData()
   const lineIds = meta.data?.lines?.map((item) => item.line_id) ?? []
   const linesKey = `${day}|${lineIds.join(',')}`
@@ -90,6 +94,18 @@ export default function LiveMap() {
     return rows.filter((flow) => flow.from_stop_id === selectedTransfer || flow.to_stop_id === selectedTransfer
       || (flow.via ?? []).some((place) => place.stop_id === selectedTransfer))
   }, [transferData, selectedFlow, selectedTransfer])
+  const journeyPaths = useMemo(() => (mode === 'journeys' ? journeyTraffic.data?.paths ?? [] : []), [mode, journeyTraffic.data])
+  const maxJourney = Math.max(1, ...journeyPaths.map((item) => item.journeys))
+  const journeyFitKey = mode === 'journeys'
+    ? (selectedPath ? journeyPaths.filter((item) => item.key === selectedPath) : journeyPaths).flatMap((item) => item.path.map((stop) => stop.stop_id)).join(',')
+    : ''
+  const journeyFitPoints = useMemo(() => {
+    if (!journeyFitKey) return null
+    const byId = new Map(journeyPaths.flatMap((item) => item.path.map((stop) => [stop.stop_id, stop])))
+    return [...new Set(journeyFitKey.split(','))].map((id) => byId.get(id)).filter(Boolean)
+    // Refit only when the set of places changes, not on every refetch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [journeyFitKey])
   const goldenFitPoints = useMemo(() => {
     if (mode !== 'golden' || !goldenRoutes.length) return null
     if (!selectedGoldenRoute) return goldenRoutes.flatMap((route) => [route.from, route.to])
@@ -103,7 +119,7 @@ export default function LiveMap() {
     return stop ? { lat: stop.lat, lon: stop.lon, zoom: 13 } : null
   }, [anomalies.data, selectedAlert, stopRows, selectedStop])
 
-  const loading = hex.fetching || stops.fetching || transfers.fetching || golden.fetching || profiles.fetching
+  const loading = hex.fetching || stops.fetching || transfers.fetching || golden.fetching || profiles.fetching || journeyTraffic.fetching
   const showHex = (mode === 'demand' || mode === 'anomalies') && layer === 'hex'
 
   return (
@@ -114,7 +130,7 @@ export default function LiveMap() {
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
           maxZoom={16}
         />
-        <Camera target={cameraTarget} fitLines={mode === 'load' ? profiles.data : null} fitPoints={goldenFitPoints} />
+        <Camera target={cameraTarget} fitLines={mode === 'load' ? profiles.data : null} fitPoints={goldenFitPoints ?? journeyFitPoints} />
 
         {showHex && (hex.data?.cells ?? []).map((cell) => (
           <Polygon
@@ -193,6 +209,39 @@ export default function LiveMap() {
             eventHandlers={{ click: () => { setSelectedTransfer(selectedTransfer === interchange.stop_id ? null : interchange.stop_id); setSelectedFlow(null) } }}
           >
             <Tooltip direction="top"><strong>{interchange.name}</strong><br />{integer.format(interchange.transfers)} transfers · worst median wait {interchange.worst_median_wait_min} min</Tooltip>
+          </CircleMarker>
+        ))}
+
+        {mode === 'journeys' && [...journeyPaths].sort((a, b) => a.journeys - b.journeys).map((item) => {
+          const selected = item.key === selectedPath
+          const faded = selectedPath && !selected
+          const tooltip = <Tooltip sticky><strong>{item.path.map((stop) => stop.name).join(' → ')}{item.destination === 'unknown' ? ' → ?' : ''}</strong><br />{integer.format(item.journeys)} journeys · #{item.rank}{item.difference_pct != null && <> · {item.difference_pct >= 0 ? '+' : '−'}{Math.abs(Math.round(item.difference_pct))}% vs typical</>}</Tooltip>
+          if (item.path.length === 1) {
+            const stop = item.path[0]
+            return (
+              <CircleMarker key={item.key} center={[stop.lat, stop.lon]} radius={4 + 12 * Math.sqrt(item.journeys / maxJourney)} pathOptions={{ color: '#4a3aa7', weight: selected ? 3 : 1.5, fillColor: '#4a3aa7', fillOpacity: faded ? 0.1 : 0.35, opacity: faded ? 0.2 : 0.9 }} eventHandlers={{ click: () => setSelectedPath(selected ? null : item.key) }}>
+                {tooltip}
+              </CircleMarker>
+            )
+          }
+          return (
+            <Polyline
+              key={item.key}
+              positions={chain(item.path, 0.14)}
+              pathOptions={{ color: '#4a3aa7', opacity: faded ? 0.12 : selected ? 0.95 : 0.6, weight: (selected ? 3 : 1.5) + 9 * Math.sqrt(item.journeys / maxJourney), lineCap: 'round', className: 'flow-line' }}
+              eventHandlers={{ click: () => setSelectedPath(selected ? null : item.key) }}
+            >
+              {tooltip}
+            </Polyline>
+          )
+        })}
+
+        {mode === 'journeys' && (selectedPath ? journeyPaths.filter((item) => item.key === selectedPath) : journeyPaths.slice(0, 12)).flatMap((item) => [
+          { ...item.path[0], role: 'start', id: `${item.key}-start` },
+          ...(item.path.length > 1 ? [{ ...item.path.at(-1), role: 'end', id: `${item.key}-end` }] : []),
+        ]).map((stop) => (
+          <CircleMarker key={stop.id} center={[stop.lat, stop.lon]} radius={4.5} pathOptions={{ color: stop.role === 'start' ? '#1a73e8' : '#188038', weight: 2.5, fillColor: '#ffffff', fillOpacity: 1 }}>
+            <Tooltip permanent={Boolean(selectedPath)} direction="top" offset={[0, -6]} className="zone-label">{stop.name}</Tooltip>
           </CircleMarker>
         ))}
 

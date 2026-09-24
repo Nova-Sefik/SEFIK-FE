@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis } from 'recharts'
 import { liveApi } from './api'
+import JourneyPanel from './JourneyPanel'
 import { useLiveData } from './LiveDataContext'
 import useLiveQuery from './useLiveQuery'
 import { anomalyColor, applyWhatIf, compact, demandColor, flowKey, hourLabel, integer, pct, signedPct, waitColor } from './utils'
@@ -340,6 +341,7 @@ export default function LiveSidePanel() {
   if (mode === 'load') return <LinePanel />
   if (mode === 'transfers') return <TransferPanel />
   if (mode === 'golden') return <GoldenPanel />
+  if (mode === 'journeys') return <JourneyPanel />
   if (mode === 'anomalies') return <AnomalyPanel />
   return <OverviewPanel />
 }

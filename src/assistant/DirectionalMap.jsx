@@ -80,7 +80,12 @@ function FitEvidence({ coordinates }) {
 function directionRows(evidence) {
   const rows = []
   for (const item of evidence.slice(0, 30)) {
-    if (item.from_place && item.to_place) {
+    if (item.measure === 'journey_path') {
+      // Tap sequence through every recorded stop; single-stop paths are drawn as points instead
+      if (item.stops?.length > 1) {
+        rows.push({ ...item, id: item.key, a: item.stops[0].stop_id, b: item.stops.at(-1).stop_id, fromPoint: item.stops[0], toPoint: item.stops.at(-1), viaPoints: item.stops.slice(1, -1), value: item.journeys, direction: `${item.path.join(' → ')}${item.destination === 'unknown' ? ' → ?' : ''}` })
+      }
+    } else if (item.from_place && item.to_place) {
       const shared = { ...item, a: item.from_place.stop_id, b: item.to_place.stop_id }
       if (item.from_to > 0) rows.push({ ...shared, id: `${item.key}-forward`, fromPoint: item.from_place, toPoint: item.to_place, value: item.from_to, direction: `${item.from} → ${item.to}` })
       if (item.to_from > 0) rows.push({ ...shared, id: `${item.key}-reverse`, a: item.to_place.stop_id, b: item.from_place.stop_id, fromPoint: item.to_place, toPoint: item.from_place, value: item.to_from, direction: `${item.to} → ${item.from}` })
@@ -101,6 +106,9 @@ function directionRows(evidence) {
 
 function pointRows(evidence) {
   return evidence
+    .map((item) => (item.measure === 'journey_path' && item.stops?.length === 1
+      ? { ...item, stop: item.stops[0].name, lat: item.stops[0].lat, lon: item.stops[0].lon, validations: item.journeys, change_pct: item.difference_pct ?? 0 }
+      : item))
     .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lon))
     .slice(0, 40)
     .map((item) => ({
@@ -156,7 +164,10 @@ export default function DirectionalMap({ evidence, intent, overlays = [] }) {
         <FitEvidence coordinates={coordinates} />
 
         {directions.map((row) => {
-          const positions = curve(row.fromPoint ?? zones[row.a], row.toPoint ?? zones[row.b])
+          const stops = [row.fromPoint ?? zones[row.a], ...(row.viaPoints ?? []), row.toPoint ?? zones[row.b]]
+          const segments = stops.slice(1).map((stop, index) => curve(stops[index], stop))
+          const positions = segments.flatMap((segment, index) => (index === 0 ? segment : segment.slice(1)))
+          const lastSegment = segments.at(-1)
           const traffic = trafficBand(row.value, maxDirection)
           const weight = 2 + 13 * Math.sqrt(row.value / maxDirection)
           return (
@@ -168,11 +179,11 @@ export default function DirectionalMap({ evidence, intent, overlays = [] }) {
                 <Tooltip sticky>
                   <strong>{row.direction}</strong>
                   <br />
-                  {traffic.label} traffic · {fmt(row.value)} supported journeys
+                  {traffic.label} traffic · {fmt(row.value)} {row.measure === 'journey_path' ? 'journeys (tap sequence, not the vehicle route)' : 'supported journeys'}
                   {row.evidence && <><br />{row.evidence}</>}
                 </Tooltip>
               </Polyline>
-              <Polygon positions={arrowHead(positions)} pathOptions={{ color: traffic.color, weight: 0, fillColor: traffic.color, fillOpacity: 0.95 }} interactive={false} />
+              <Polygon positions={arrowHead(lastSegment)} pathOptions={{ color: traffic.color, weight: 0, fillColor: traffic.color, fillOpacity: 0.95 }} interactive={false} />
             </Fragment>
           )
         })}

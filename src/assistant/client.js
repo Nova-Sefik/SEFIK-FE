@@ -1,3 +1,4 @@
+import { API_URL } from '../live/api'
 import { chartForQuestion, CHART_TYPES } from './context'
 
 const compatibleCharts = {
@@ -6,6 +7,8 @@ const compatibleCharts = {
   transfer: ['journey_layers', 'mobility_map'],
   anomaly: ['anomalies', 'mobility_map'],
   flow: ['passenger_flows', 'mobility_map'],
+  journey: ['journey_path_traffic', 'hour_vs_average', 'mobility_map'],
+  compare: ['hour_vs_average'],
   limits: ['route_opportunities'],
 }
 
@@ -40,22 +43,23 @@ function validResponse(value, context) {
 }
 
 export async function askPlanner(question, conversation = [], filters, liveFilters) {
-  const endpoint = import.meta.env.VITE_AI_ENDPOINT || 'http://localhost:8787/api/planner'
+  // The planner runs in the backend next to the data; the OpenAI key never reaches the browser.
+  const endpoint = import.meta.env.VITE_AI_ENDPOINT || `${API_URL}/api/planner`
 
   let response
   try {
     response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(90000),
       body: JSON.stringify({ question, filters, live_filters: liveFilters, conversation: conversation.slice(-8) }),
     })
   } catch {
-    throw new Error('Cannot reach the OpenAI planner server. Start it with npm run dev:ai.')
+    throw new Error(`Cannot reach the planner at ${endpoint}. Start carrolinha-BE, or check VITE_API_URL.`)
   }
 
   const body = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(body.error || `OpenAI planner returned ${response.status}.`)
+  if (!response.ok) throw new Error(body.detail || body.error || `The planner returned ${response.status}.`)
 
   const context = body.context
   if (!context?.evidence || !context?.applied_filters) throw new Error('OpenAI did not return a verified data-tool result.')

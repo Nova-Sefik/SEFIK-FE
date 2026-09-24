@@ -63,6 +63,26 @@ export const liveApi = {
   transfers: (day) => get('/api/transfers', { day }, { maxAge: 120_000 }),
   anomalies: (day) => get('/api/anomalies', { day }, { maxAge: 120_000 }),
   golden: () => get('/api/golden', {}, { maxAge: Infinity }),
+  places: (q) => get('/api/places', { q, limit: 8 }, { maxAge: Infinity }),
+  journeyTraffic: (params) => get('/api/journey-traffic', params, { maxAge: 120_000 }),
+  compare: (params) => get('/api/compare', params, { maxAge: 120_000 }),
+}
+
+// Runs one planner tool without the model: same code path and numbers as an AI answer.
+export async function runTool(name, args = {}, liveFilters = {}) {
+  let response
+  try {
+    response = await fetch(`${API_URL}/api/tools/${encodeURIComponent(name)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ args, live_filters: liveFilters }),
+    })
+  } catch {
+    throw new ApiError(0, `Cannot reach the mobility API at ${API_URL}`)
+  }
+  const body = await response.json().catch(() => ({}))
+  if (!response.ok) throw new ApiError(response.status, typeof body.detail === 'string' ? body.detail : `API returned ${response.status}`)
+  return body
 }
 
 export function clearLiveCache() {

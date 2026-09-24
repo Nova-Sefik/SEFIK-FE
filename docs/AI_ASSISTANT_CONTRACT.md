@@ -43,7 +43,7 @@ The browser does not choose and send one evidence table to OpenAI. The gateway o
 | `query_route_opportunities` | Ranked unsupported direct-link opportunities |
 | `query_route_feasibility` | Current GTFS transfer path and assumption-based direct-service time, demand and operating comparison |
 | `query_demand_supply` | Highest demand-pressure stop/time combinations |
-| `query_journey_layers` | Mode → hub → mode → destination chains |
+| `query_journey_layers` | Transfer chains: origin mode → transfer area → next mode → next detected destination (transfer windows, not complete journeys) |
 | `query_anomalies` | Observed versus same-time baseline alerts |
 | `query_passenger_flows` | Directional zone-to-zone flows |
 | `query_live_stop_demand` | Backend stop boardings versus the same-time expected baseline |

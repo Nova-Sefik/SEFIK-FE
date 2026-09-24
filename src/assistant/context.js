@@ -13,7 +13,7 @@ import {
 } from '../lib/model'
 import { EMPTY_FILTERS, filterSummary } from './filters'
 
-export const CHART_TYPES = ['mobility_map', 'route_opportunities', 'route_feasibility', 'demand_supply', 'journey_layers', 'anomalies', 'passenger_flows']
+export const CHART_TYPES = ['mobility_map', 'route_opportunities', 'route_feasibility', 'demand_supply', 'journey_layers', 'anomalies', 'passenger_flows', 'journey_path_traffic', 'hour_vs_average']
 
 const normalise = (value) => value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
@@ -34,6 +34,8 @@ const DEFAULT_CHART = {
   transfer: 'journey_layers',
   anomaly: 'anomalies',
   flow: 'passenger_flows',
+  journey: 'journey_path_traffic',
+  compare: 'hour_vs_average',
   limits: 'route_opportunities',
 }
 
@@ -184,7 +186,6 @@ function transferEvidence(filters) {
       evidence: path.confidence === 0 ? 'observed' : 'strongly_inferred',
       journeys: path.n,
     }))
-    .slice(0, 100)
 }
 
 function anomalyEvidence(filters) {

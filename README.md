@@ -12,11 +12,11 @@ The app combines anonymised Navegante validations with the GTFS plan active on e
 
 Clicking a stop opens its observed-versus-expected day profile, seven-day hourly grid, passenger mix, accessibility facilities, grouped operator IDs, and transfer summary.
 
-The whole-sample overview also contains a four-layer journey graph:
+The whole-sample overview also contains a four-layer transfer-chain graph:
 
-**Origin mode → transfer hub → next mode → destination zone**
+**Origin mode → transfer area → next mode → next detected destination**
 
-It connects cross-operator card sequences while keeping observed Metro exits visibly distinct from inferred bus, rail, and ferry movements.
+A chain is two boardings by the same card within 60 minutes plus the next detected destination; it is a transfer window, not a complete journey. Destinations confirmed by a Metro exit are kept distinct from those inferred from the next bus, rail, or ferry boarding. Every stored combination is drawn by default, and a location filter narrows the graph to chosen transfer areas or destinations.
 
 ## AI planning workspace
 

@@ -9,6 +9,9 @@ import {
   YAxis,
 } from 'recharts'
 import { ABOVE, FLOW_COLOR, FLOW_TINTS, GRID, MUTED, OPPORTUNITY_COLOR, OPPORTUNITY_LIGHT, fmt } from '../components/theme'
+import HourVsTypical from '../journeys/HourVsTypical'
+import JourneySankey from '../journeys/JourneySankey'
+import PathList from '../journeys/PathList'
 import JourneyLayers from '../overview/JourneyLayers'
 import AssistantTimeline from './AssistantTimeline'
 import DirectionalMap from './DirectionalMap'
@@ -22,6 +25,8 @@ const TITLES = {
   journey_layers: 'How journeys connect across modes',
   anomalies: 'Observed demand versus same-time baseline',
   passenger_flows: 'Strongest passenger flows',
+  journey_path_traffic: 'Journeys along paths',
+  hour_vs_average: 'This hour versus typical',
 }
 
 const INTENT_TITLES = {
@@ -30,6 +35,8 @@ const INTENT_TITLES = {
   transfer: 'Transfer paths by location',
   anomaly: 'Demand anomalies by stop',
   flow: 'Passenger movement and traffic levels',
+  journey: 'Journey paths on the map',
+  compare: 'This hour versus typical',
 }
 
 const VIEWS = {
@@ -38,6 +45,30 @@ const VIEWS = {
   transfer: [{ type: 'mobility_map', label: 'Map' }, { type: 'journey_layers', label: 'Sankey' }],
   anomaly: [{ type: 'mobility_map', label: 'Map' }, { type: 'anomalies', label: 'Bars' }],
   flow: [{ type: 'mobility_map', label: 'Map' }, { type: 'passenger_flows', label: 'Bars' }],
+  journey: [{ type: 'mobility_map', label: 'Map' }, { type: 'journey_path_traffic', label: 'Paths' }, { type: 'hour_vs_average', label: 'vs typical' }],
+  compare: [{ type: 'hour_vs_average', label: 'vs typical' }],
+}
+
+const COMPARE_UNITS = { stop_boardings: 'boardings', network_boardings: 'boardings', line_boardings: 'boardings', transfers: 'transfers' }
+
+function JourneyTraffic({ context }) {
+  const journey = context.journey
+  if (!journey) return null
+  const { totals } = journey
+  return (
+    <div className="h-full overflow-y-auto pr-1">
+      <p className="mb-3 text-xs text-ink-3">
+        {fmt(totals.shown_volume)} journeys on {fmt(totals.shown_paths)} paths
+        {totals.below_min_volume > 0 && ` · ${fmt(totals.below_min_volume)} in paths under the minimum volume`}
+        {totals.below_privacy_threshold > 0 && ` · ${fmt(totals.below_privacy_threshold)} in paths under ${journey.privacy_min} (counted, never listed)`}
+        {!journey.coverage.complete && ' · period not fully covered by the source data'}
+      </p>
+      <JourneySankey sankey={journey.sankey} />
+      <h3 className="mb-1 mt-5 text-xs font-medium uppercase tracking-wide text-ink-3">Paths · busiest first</h3>
+      <PathList paths={context.evidence} />
+      <p className="mt-3 text-[10px] leading-4 text-ink-4">{journey.method}</p>
+    </div>
+  )
 }
 
 function GraphTooltip({ active, payload, label }) {
@@ -169,7 +200,7 @@ export default function AssistantChart({ response, filterLabel, filters, onFilte
   const intent = response.context.intent === 'limits' ? 'route' : response.context.intent
   const views = VIEWS[intent] ?? []
   const title = type === 'mobility_map' ? (INTENT_TITLES[intent] ?? TITLES[type]) : TITLES[type]
-  const supportsTimeline = intent !== 'transfer' && type !== 'route_feasibility'
+  const supportsTimeline = !['transfer', 'journey', 'compare'].includes(intent) && type !== 'route_feasibility'
 
   return (
     <section className="relative h-[calc(100vh-13rem)] min-h-[34rem] overflow-hidden rounded-3xl border border-line bg-surface p-4 sm:p-6">
@@ -205,9 +236,19 @@ export default function AssistantChart({ response, filterLabel, filters, onFilte
         {evidence.length > 0 && type === 'route_opportunities' && <RouteChart evidence={evidence} />}
         {type === 'route_feasibility' && <FeasibilityChart rows={response.feasibility ?? []} />}
         {evidence.length > 0 && type === 'demand_supply' && <SupplyChart evidence={evidence} />}
-        {evidence.length > 0 && type === 'journey_layers' && <JourneyLayers paths={evidence} />}
+        {evidence.length > 0 && type === 'journey_layers' && (
+          <div className="h-full overflow-y-auto">
+            <JourneyLayers paths={evidence} locationFilter={false} />
+          </div>
+        )}
         {evidence.length > 0 && type === 'anomalies' && <AnomalyChart evidence={evidence} />}
         {evidence.length > 0 && type === 'passenger_flows' && <FlowChart evidence={evidence} />}
+        {evidence.length > 0 && type === 'journey_path_traffic' && <JourneyTraffic context={response.context} />}
+        {type === 'hour_vs_average' && response.context.comparison && (
+          <div className="h-full overflow-y-auto pr-1">
+            <HourVsTypical comparison={response.context.comparison} unit={COMPARE_UNITS[response.context.measure] ?? 'journeys'} />
+          </div>
+        )}
       </div>
       {type === 'demand_supply' && evidence.length > 0 && (
         <p className="absolute bottom-16 left-6 right-6 text-center text-[10px] text-ink-4">

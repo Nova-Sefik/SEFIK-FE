@@ -23,7 +23,7 @@ export default function Root() {
   if (hash.startsWith('#/overview')) page = <OverviewPage />
   return (
     <LiveDataProvider>
-      <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-page text-sm text-ink-3">Loading Sefik…</div>}>
+      <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-page text-sm text-ink-3">Loading…</div>}>
         {page}
       </Suspense>
     </LiveDataProvider>

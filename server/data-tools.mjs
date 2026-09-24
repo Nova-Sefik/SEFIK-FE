@@ -228,17 +228,23 @@ function routeEvidence(filters, limit, requested = {}) {
     }).filter((row) => row.supported_journeys > 0).sort((a, b) => b.supported_journeys - a.supported_journeys).slice(0, limit)
 }
 
-function transferEvidence(filters, limit) {
+function transferMatches(filters) {
   const confidences = filters.evidence.length ? filters.evidence : [0, 1]
   return overview.journeyLayers
     .filter((row) => !filters.locations.length || filters.locations.includes(String(row.hub)) || filters.locations.includes(String(row.to)))
     .filter((row) => !filters.modes.length || filters.modes.includes(row.from) || filters.modes.includes(row.via))
-    .filter((row) => confidences.includes(row.confidence)).slice(0, limit).map((row) => ({
-      ...row, key: `${row.from}-${row.hub}-${row.via}-${row.to}-${row.confidence}`,
-      origin_mode: row.from, origin_mode_name: demand.groups[row.from], transfer_hub: row.hubName,
-      next_mode: row.via, next_mode_name: demand.groups[row.via], destination: row.toName,
-      evidence: EVIDENCE_NAMES[row.confidence], journeys: row.n,
-    }))
+    .filter((row) => confidences.includes(row.confidence))
+}
+
+function transferEvidence(filters, limit) {
+  return transferMatches(filters).slice(0, limit).map((row) => ({
+    ...row, key: `${row.from}-${row.hub}-${row.via}-${row.to}-${row.confidence}`,
+    origin_mode: row.from, origin_mode_name: demand.groups[row.from], transfer_hub: row.hubName,
+    next_mode: row.via, next_mode_name: demand.groups[row.via], destination: row.toName,
+    evidence: EVIDENCE_NAMES[row.confidence],
+    destination_evidence: row.confidence === 0 ? 'metro_exit_confirmed' : 'next_boarding_inferred',
+    journeys: row.n, transfer_chains: row.n,
+  }))
 }
 
 function anomalyEvidence(filters, limit) {
@@ -258,8 +264,16 @@ function anomalyEvidence(filters, limit) {
   return rows.sort((a, b) => Math.abs(b.observed - b.expected) - Math.abs(a.observed - a.expected)).slice(0, limit)
 }
 
-function limitations(analysis, filters, requested = {}) {
+function limitations(analysis, filters, requested = {}, limit = Infinity) {
   const rows = []
+  if (analysis === 'transfer') {
+    rows.push('Journey layers count transfer chains (two boardings by the same card within 60 minutes plus the next detected destination), not complete journeys; a longer journey can add more than one chain. Origin location is not recorded, so location filters match the transfer area or destination.')
+    const matches = transferMatches(filters)
+    if (matches.length > limit) {
+      const sum = (items) => items.reduce((total, row) => total + row.n, 0).toLocaleString('en-US')
+      rows.push(`Showing the top ${limit} of ${matches.length} matching combinations (${sum(matches.slice(0, limit))} of ${sum(matches)} transfer chains).`)
+    }
+  }
   if (['supply', 'anomaly'].includes(analysis) && filters.evidence.length) rows.push('Journey-confidence filters do not apply to stop validation totals.')
   if (analysis === 'route' && (filters.modes.length || filters.lines.length)) rows.push('Route-opportunity aggregates do not retain mode or line attribution.')
   if (analysis === 'route' && filters.evidence.length && (filters.days.length || filters.fromTime !== null || filters.toTime !== null)) rows.push('Time and evidence can each be filtered, but their joint split is not retained; the time-filtered total takes precedence.')
@@ -304,13 +318,14 @@ function query(analysis, filters, limit, requested = {}) {
       origin_zone: originZone,
       destination_zone: destinationZone,
     } : null,
-    filter_limitations: limitations(analysis, filters, requested), allowed_charts: chartOptions[analysis],
+    filter_limitations: limitations(analysis, filters, requested, limit), allowed_charts: chartOptions[analysis],
     sample: { validations: demand.meta.validations, anonymous_cards: demand.meta.cards, slot_minutes: demand.meta.slotMinutes, coverage_windows: demand.meta.windows },
     evidence_rules: {
       observed: 'Metro entry and exit recorded for the same anonymous card.',
       strongly_inferred: 'The same anonymous card boards a different line within 60 minutes.',
       demand_pressure: 'Validations per scheduled departure divided by nominal mode capacity; not measured occupancy.',
       route_opportunity: 'Recurring flow on at least three sampled days with no one-seat trip in the applicable GTFS.',
+      transfer_chain: 'Two boardings by the same card within 60 minutes (the transfer is always inferred) plus the next detected destination: observed = confirmed by a Metro exit, strongly_inferred = the next boarding location.',
     },
   }
 }
@@ -343,7 +358,7 @@ export const DATA_TOOLS = [
   { type: 'function', name: 'query_passenger_flows', strict: true, description: 'Find directional origin-to-destination passenger flows for maps or ranked-flow charts.', parameters: queryParameters },
   { type: 'function', name: 'query_route_opportunities', strict: true, description: 'Find recurring demand corridors without a one-seat GTFS connection. For a from-to question, pass both ordered origin and destination; for a network-wide search, pass both as null.', parameters: routeQueryParameters },
   { type: 'function', name: 'query_route_feasibility', strict: true, description: 'Compare the current stop-level GTFS transfer path with an assumption-based direct service, including estimated time saved, captured demand, daily vehicle kilometres, fleet and operating cost. Pass both origin and destination.', parameters: routeQueryParameters },
-  { type: 'function', name: 'query_journey_layers', strict: true, description: 'Find origin mode to transfer hub to next mode to destination chains for Sankey or map diagrams.', parameters: queryParameters },
+  { type: 'function', name: 'query_journey_layers', strict: true, description: 'Find transfer chains (origin mode to transfer area to next mode to next detected destination) for Sankey or map diagrams. Chains are transfer windows, not complete journeys.', parameters: queryParameters },
   { type: 'function', name: 'query_anomalies', strict: true, description: 'Find stop and time periods with observed validations far from the same-time baseline.', parameters: queryParameters },
 ]
 

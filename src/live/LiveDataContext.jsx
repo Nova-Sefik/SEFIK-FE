@@ -7,6 +7,10 @@ import { ALL_OPERATORS } from './utils'
 const STORAGE_KEY = 'sefik-live-filters'
 const LiveDataContext = createContext(null)
 
+// Places are {stop_id, name}; the backend resolves and filters, the browser only asks.
+export const EMPTY_JOURNEY = { origin: null, through: [], destination: null, any: [], match: 'contains', minVolume: 0, wholeDay: false }
+const PAGE = 50
+
 function storedFilters() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
@@ -36,6 +40,10 @@ export function LiveDataProvider({ children }) {
   const [selectedGolden, setSelectedGolden] = useState(null)
   const [selectedAlert, setSelectedAlert] = useState(null)
   const [whatif, setWhatif] = useState(0)
+  const [journey, setJourneyState] = useState(EMPTY_JOURNEY)
+  const [journeyLimit, setJourneyLimit] = useState(PAGE)
+  const [journeyView, setJourneyView] = useState('map')
+  const [selectedPath, setSelectedPath] = useState(null)
   const [playing, setPlaying] = useState(false)
 
   const meta = useLiveQuery('meta', () => liveApi.meta())
@@ -94,6 +102,28 @@ export function LiveDataProvider({ children }) {
   const anomalies = useLiveQuery('anomalies|week', () => liveApi.anomalies(), { enabled: Boolean(meta.data) })
   const transfers = useLiveQuery(`transfers|${day}`, () => liveApi.transfers(day), { enabled: Boolean(meta.data) })
   const golden = useLiveQuery('golden', () => liveApi.golden(), { enabled: Boolean(meta.data) })
+  const journeyParams = useMemo(() => ({
+    day,
+    hour: journey.wholeDay ? undefined : hour,
+    origin: journey.origin?.stop_id,
+    through: journey.through.map((place) => place.stop_id).join(','),
+    destination: journey.destination?.stop_id,
+    any: journey.any.map((place) => place.stop_id).join(','),
+    match: journey.match,
+    min_volume: journey.minVolume,
+    limit: journeyLimit,
+  }), [day, hour, journey, journeyLimit])
+  const journeyTraffic = useLiveQuery(
+    `journey|${JSON.stringify(journeyParams)}`,
+    () => liveApi.journeyTraffic(journeyParams),
+    { enabled: Boolean(meta.data) && mode === 'journeys' },
+  )
+  const setJourney = (update) => {
+    setJourneyState((current) => ({ ...current, ...(typeof update === 'function' ? update(current) : update) }))
+    setJourneyLimit(PAGE)
+    setSelectedPath(null)
+  }
+  const showMorePaths = () => setJourneyLimit((current) => Math.min(500, current + PAGE))
   const stopDetail = useLiveQuery(
     `stop|${selectedStop}|${filterKey}|${hour}`,
     () => liveApi.stop(selectedStop, filters, hour),
@@ -136,6 +166,7 @@ export function LiveDataProvider({ children }) {
 
   const value = {
     meta, overview, hex, stops, anomalies, transfers, golden, stopDetail, scales,
+    journey, setJourney, journeyTraffic, showMorePaths, journeyView, setJourneyView, selectedPath, setSelectedPath,
     filters, day, setDay: setDaySafe, hour, setHour, ops, toggleOperator, segment, setSegment,
     mode, setMode, layer, setLayer, selectedStop, setSelectedStop, openStop,
     selectedLine, setSelectedLine, selectedTransfer, setSelectedTransfer, selectedFlow, setSelectedFlow,
