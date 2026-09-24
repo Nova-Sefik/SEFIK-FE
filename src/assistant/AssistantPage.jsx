@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import AssistantChart from './AssistantChart'
 import FilterPanel from './FilterPanel'
 import { askPlanner } from './client'
-import { buildAssistantContext, chartForQuestion } from './context'
+import { buildAssistantContext } from './context'
 import { EMPTY_FILTERS, activeFilterCount, filterSummary, resolveNaturalLanguageFilters } from './filters'
 import { useLiveData } from '../live/LiveDataContext'
 import { hourLabel } from '../live/utils'
@@ -33,6 +33,26 @@ const INTENT_QUESTIONS = {
   limits: 'Show the best direct routes',
 }
 
+// Shown over the chart while the planner works, so no placeholder graph appears first
+function PlannerLoading({ question }) {
+  const [seconds, setSeconds] = useState(0)
+  useEffect(() => {
+    const timer = setInterval(() => setSeconds((value) => value + 1), 1000)
+    return () => clearInterval(timer)
+  }, [])
+  return (
+    <section className="flex h-[calc(100vh-13rem)] min-h-[34rem] items-center justify-center rounded-3xl border border-line bg-surface p-6" role="status" aria-live="polite">
+      <div className="max-w-md text-center">
+        <span className="mx-auto block h-10 w-10 animate-spin rounded-full border-4 border-primary-soft border-t-primary" />
+        <p className="mt-5 text-sm font-medium text-ink">The AI planner is working on your question</p>
+        <p className="mt-2 text-sm text-ink-2">“{question}”</p>
+        <p className="mt-4 text-xs leading-5 text-ink-3">It chooses the right data, queries the live mobility backend, and then draws the chart from those exact numbers. This usually takes 5–15 seconds.</p>
+        <p className="mt-3 text-[11px] tabular-nums text-ink-4">{seconds}s</p>
+      </div>
+    </section>
+  )
+}
+
 function initialQuestion() {
   const query = window.location.hash.split('?')[1]
   return new URLSearchParams(query || '').get('prompt') || ''
@@ -56,6 +76,7 @@ export default function AssistantPage() {
   const [response, setResponse] = useState(() => graphResponse('mobility_map', EMPTY_FILTERS))
   const [showAnswer, setShowAnswer] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [pendingQuestion, setPendingQuestion] = useState('')
   const [error, setError] = useState('')
   const [conversation, setConversation] = useState([])
   const prompts = useMemo(() => response.followups?.length ? response.followups : STARTERS, [response.followups])
@@ -95,10 +116,8 @@ export default function AssistantPage() {
     const next = value.trim()
     if (!next || loading) return
     const resolvedFilters = resolveNaturalLanguageFilters(next, filters)
-    const localContext = buildAssistantContext(next, resolvedFilters)
-    const localChart = chartForQuestion(next, localContext.intent)
     setFilters(resolvedFilters)
-    setResponse({ chart: { type: localChart }, context: localContext, question: next, followups: STARTERS })
+    setPendingQuestion(next)
     setQuestion('')
     setLoading(true)
     setShowAnswer(false)
@@ -161,13 +180,15 @@ export default function AssistantPage() {
           ))}
         </div>
         <div className="min-h-0 flex-1">
-          <AssistantChart
-            response={response}
-            filterLabel={filterSummary(filters)}
-            filters={filters}
-            onFiltersChange={changeFilters}
-            onViewChange={selectView}
-          />
+          {loading ? <PlannerLoading question={pendingQuestion} /> : (
+            <AssistantChart
+              response={response}
+              filterLabel={filterSummary(filters)}
+              filters={filters}
+              onFiltersChange={changeFilters}
+              onViewChange={selectView}
+            />
+          )}
         </div>
       </div>
 

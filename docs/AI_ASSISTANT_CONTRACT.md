@@ -1,19 +1,10 @@
 # AI planning assistant contract
 
-The graph-first assistant is available at `#/assistant` and uses the OpenAI Responses API with function tools through `server/planner.mjs`.
+The graph-first assistant is available at `#/assistant`. It calls `POST /api/planner` on the mobility backend (carrolinha-BE, `app/planner.py`), which runs the OpenAI Responses API with function tools next to the data.
 
-It does not generate local fallback recommendations. If OpenAI is unavailable, the graph remains visible and the UI shows a connection error. Never place an API key in a `VITE_*` variable because Vite exposes those values to the browser.
+It does not generate local fallback recommendations. If OpenAI is unavailable, the UI shows a connection error. The OpenAI key lives only in the backend's git-ignored `.env` (or a Render secret). Never place an API key in a `VITE_*` variable because Vite exposes those values to the browser.
 
-Put the server-side key in the git-ignored `.env.local`, then start both the Vite app and local gateway:
-
-```bash
-OPENAI_API_KEY="your_new_rotated_key"
-OPENAI_MODEL="gpt-6-astra"
-```
-
-```bash
-npm run dev:ai
-```
+> The request/response sections below describe the original contract. The backend keeps the same response shape; its tool list is `find_places` and the `query_live_*` tools, including `query_live_journey_traffic` and `query_live_compare`, with the chart types `journey_path_traffic` and `hour_vs_average`.
 
 ## Request
 
