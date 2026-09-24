@@ -50,10 +50,13 @@ The browser does not choose and send one evidence table to OpenAI. The gateway o
 | `query_live_line_capacity` | Backend estimated peak on-board load versus places offered |
 | `query_live_transfers` | Backend interchange volumes and median/p90 transfer waits |
 | `query_live_anomalies` | Backend-detected observed-versus-expected stop-hour alerts |
+| `query_live_golden_routes` | Backend-ranked best direct routes, current transfer paths, projected riders, time savings, peak trips, affected lines, and relieved hubs |
 
 The browser also sends `live_filters` containing the explorer's current `day`, `hour`, `ops`, and `segment`. Empty arguments in a `query_live_*` call retain those values. `PULSO_API_URL` configures the server-side backend URL; it should normally match the browser's `VITE_API_URL`.
 
-The model must call at least one query tool before answering. It may call multiple tools for comparisons. The gateway executes every tool against `src/data/demand.json` and `src/data/overview.json`, then returns the selected tool result to the browser as the trusted graph context. This data adapter can later be replaced by the Pulso API without changing the model-facing tool contract.
+The model must call at least one query tool before answering. It may call multiple tools for comparisons. `query_live_*` tools execute against the backend configured by `PULSO_API_URL`; the remaining aggregate tools use `src/data/demand.json` and `src/data/overview.json`. The gateway returns the selected tool result to the browser as the trusted graph context.
+
+For “best route”, “golden route”, projected direct-line demand, time-saving, or network-wide direct-route questions, `query_live_golden_routes` is the authoritative primary analysis. Its ranking, directional volumes, percentile, headway, and estimates come directly from `/api/golden`; neither the gateway nor browser recalculates them. The model may explain or recommend an investigation but cannot replace those values.
 
 `query_route_opportunities` accepts separate `origin` and `destination` arguments. A prompt such as “better route from Oriente to Pontinha” is restricted to that ordered pair rather than treating the two places as an unordered location filter. Both arguments are `null` for a network-wide opportunity search. If a between-place request supplies only one endpoint, the assistant asks for the missing endpoint and does not draw a proposal.
 

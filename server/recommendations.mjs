@@ -13,6 +13,16 @@ function cleanText(value, maximum) {
 }
 
 function geometryFor(row) {
+  if (row.from_place && row.to_place) {
+    return {
+      kind: 'corridor',
+      from: row.from,
+      to: row.to,
+      from_point: row.from_place,
+      to_point: row.to_place,
+      supported_journeys: row.supported_journeys ?? row.multi_vehicle_journeys_per_day ?? 0,
+    }
+  }
   if (row.from_zone !== undefined && row.to_zone !== undefined) {
     return {
       kind: 'corridor',

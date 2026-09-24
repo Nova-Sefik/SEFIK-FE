@@ -32,6 +32,8 @@ export function LiveDataProvider({ children }) {
   const [selectedStop, setSelectedStop] = useState(null)
   const [selectedLine, setSelectedLine] = useState(null)
   const [selectedTransfer, setSelectedTransfer] = useState(null)
+  const [selectedFlow, setSelectedFlow] = useState(null)
+  const [selectedGolden, setSelectedGolden] = useState(null)
   const [selectedAlert, setSelectedAlert] = useState(null)
   const [whatif, setWhatif] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -91,6 +93,7 @@ export function LiveDataProvider({ children }) {
   const stops = useLiveQuery(`stops|${filterKey}|${hour}`, () => liveApi.stops(filters, hour), { enabled: Boolean(meta.data) })
   const anomalies = useLiveQuery('anomalies|week', () => liveApi.anomalies(), { enabled: Boolean(meta.data) })
   const transfers = useLiveQuery(`transfers|${day}`, () => liveApi.transfers(day), { enabled: Boolean(meta.data) })
+  const golden = useLiveQuery('golden', () => liveApi.golden(), { enabled: Boolean(meta.data) })
   const stopDetail = useLiveQuery(
     `stop|${selectedStop}|${filterKey}|${hour}`,
     () => liveApi.stop(selectedStop, filters, hour),
@@ -132,10 +135,11 @@ export function LiveDataProvider({ children }) {
   }
 
   const value = {
-    meta, overview, hex, stops, anomalies, transfers, stopDetail, scales,
+    meta, overview, hex, stops, anomalies, transfers, golden, stopDetail, scales,
     filters, day, setDay: setDaySafe, hour, setHour, ops, toggleOperator, segment, setSegment,
     mode, setMode, layer, setLayer, selectedStop, setSelectedStop, openStop,
-    selectedLine, setSelectedLine, selectedTransfer, setSelectedTransfer,
+    selectedLine, setSelectedLine, selectedTransfer, setSelectedTransfer, selectedFlow, setSelectedFlow,
+    selectedGolden, setSelectedGolden,
     selectedAlert, setSelectedAlert, whatif, setWhatif, playing, setPlaying,
   }
 

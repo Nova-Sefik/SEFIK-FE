@@ -40,6 +40,20 @@ export const LIVE_DATA_TOOLS = [
     description: 'Query backend-detected stop-hour anomalies with observed and expected boardings. Use this for unusual activity, spikes, drops, and alerts.',
     parameters: commonParameters,
   },
+  {
+    type: 'function', name: 'query_live_golden_routes', strict: true,
+    description: 'Query backend-ranked direct-line opportunities where many weekday journeys currently need multiple vehicles. Use this for best route, golden route, direct-line, time-saving, projected ridership, and network-wide route opportunity questions.',
+    parameters: {
+      type: 'object', additionalProperties: false,
+      required: ['origin', 'destination', 'verdict', 'limit'],
+      properties: {
+        origin: { type: ['string', 'null'], description: 'Optional origin place name. Null searches the whole ranked network.' },
+        destination: { type: ['string', 'null'], description: 'Optional destination place name. Null searches the whole ranked network.' },
+        verdict: { type: ['string', 'null'], enum: ['strong', 'viable', 'weak', null], description: 'Optional backend verdict filter.' },
+        limit: { type: 'integer', minimum: 1, maximum: 50, description: 'Maximum ranked routes to return.' },
+      },
+    },
+  },
 ]
 
 async function get(path, params = {}) {
@@ -76,6 +90,75 @@ function applied(filters) {
 export async function executeLiveDataTool(name, args = {}, baseFilters = {}) {
   const filters = resolved(args, baseFilters)
   const shared = { day: filters.day, ops: filters.ops.join(','), segment: filters.segment }
+
+  if (name === 'query_live_golden_routes') {
+    const data = await get('/api/golden')
+    const origin = args.origin?.trim().toLowerCase()
+    const destination = args.destination?.trim().toLowerCase()
+    const matches = (place, query) => !query || place.name.toLowerCase().includes(query) || place.stop_id.toLowerCase().includes(query)
+    const matchesPair = (route) => {
+      if (origin && destination) {
+        return (matches(route.from, origin) && matches(route.to, destination))
+          || (matches(route.from, destination) && matches(route.to, origin))
+      }
+      if (origin) return matches(route.from, origin) || matches(route.to, origin)
+      if (destination) return matches(route.from, destination) || matches(route.to, destination)
+      return true
+    }
+    const evidence = data.routes
+      .filter(matchesPair)
+      .filter((route) => !args.verdict || route.verdict === args.verdict)
+      .slice(0, args.limit || 16)
+      .map((route) => ({
+          key: route.route_id,
+          rank: route.rank,
+          from: route.from.name,
+          to: route.to.name,
+          from_place: route.from,
+          to_place: route.to,
+          from_to: route.from_to_per_day,
+          to_from: route.to_from_per_day,
+          supported_journeys: route.multi_per_day,
+          multi_vehicle_journeys_per_day: route.multi_per_day,
+          existing_direct_journeys_per_day: route.direct_per_day,
+          multi_vehicle_share: route.multi_share,
+          average_legs: route.avg_legs,
+          current_minutes: route.current_min,
+          projected_minutes: route.projected_min,
+          minutes_saved: route.saved_min,
+          projected_riders_per_day: route.riders_per_day,
+          person_hours_saved_per_day: route.person_hours_per_day,
+          peak_hour: route.peak_hour,
+          peak_riders: route.peak_riders,
+          trips_needed_at_peak: route.trips_needed_peak,
+          peak_headway_minutes: route.peak_headway_min,
+          distance_km: route.distance_km,
+          demand_spike_z: route.spike_z,
+          demand_top_percent: route.demand_top_percent,
+          verdict: route.verdict,
+          flags: route.flags,
+          hourly: route.hourly,
+          current_paths: route.paths,
+          shown_paths_share: route.shown_paths_share,
+          affected_lines: route.replaced,
+          transfer_hubs_removed: route.hubs,
+          current_direct_lines: route.direct_lines,
+          measure: 'backend_ranked_direct_line',
+        }))
+    return {
+      schema_version: 'live-1.0', source: 'mobility_backend', analysis: 'route', intent: 'route', evidence,
+      applied_filters: {
+        origin: args.origin ?? null,
+        destination: args.destination ?? null,
+        verdict: args.verdict ?? null,
+        human_summary: [args.origin && `from ${args.origin}`, args.destination && `to ${args.destination}`, args.verdict].filter(Boolean).join(' · ') || 'all ranked routes',
+        logic: 'Named endpoints are matched as a bidirectional pair, then combined with verdict using AND. Ranking is supplied by the backend.',
+      },
+      allowed_charts: ['route_opportunities', 'mobility_map'],
+      filter_limitations: [data.method, 'Golden routes describe a typical weekday and do not use the explorer day, hour, operator, or passenger-segment filters.'],
+      assumptions: data.assumptions,
+    }
+  }
 
   if (name === 'query_live_stop_demand') {
     const data = await get('/api/stops', { ...shared, hour: filters.hour })

@@ -62,6 +62,7 @@ export const liveApi = {
   line: (id, day) => get(`/api/lines/${encodeURIComponent(id)}/profile`, { day }, { maxAge: 120_000 }),
   transfers: (day) => get('/api/transfers', { day }, { maxAge: 120_000 }),
   anomalies: (day) => get('/api/anomalies', { day }, { maxAge: 120_000 }),
+  golden: () => get('/api/golden', {}, { maxAge: Infinity }),
 }
 
 export function clearLiveCache() {

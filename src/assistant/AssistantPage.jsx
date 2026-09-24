@@ -8,8 +8,8 @@ import { useLiveData } from '../live/LiveDataContext'
 import { hourLabel } from '../live/utils'
 
 const STARTERS = [
+  'Show the best direct routes',
   'Show passenger movement directions on a map',
-  'Show better route suggestions',
   'Where is demand above supply?',
   'Show movement from bus to Metro',
   'What demand looks unusual?',
@@ -18,19 +18,24 @@ const STARTERS = [
 const GRAPHS = [
   { type: 'mobility_map', intent: 'flow', label: 'Flow map', question: 'Show passenger movement directions on a map' },
   { type: 'demand_supply', intent: 'supply', label: 'Demand vs supply', question: 'Where is demand above supply?' },
-  { type: 'route_opportunities', intent: 'route', label: 'Direct links', question: 'Show better route suggestions' },
+  { type: 'route_opportunities', intent: 'route', label: 'Direct links', question: 'Show the best direct routes' },
   { type: 'journey_layers', intent: 'transfer', label: 'Journey layers', question: 'Show movement across transport modes' },
   { type: 'passenger_flows', intent: 'flow', label: 'Passenger flows', question: 'Show passenger movement between locations' },
   { type: 'anomalies', intent: 'anomaly', label: 'Unusual activity', question: 'What demand looks unusual?' },
 ]
 
 const INTENT_QUESTIONS = {
-  route: 'Show better route suggestions',
+  route: 'Show the best direct routes',
   supply: 'Where is demand above supply?',
   transfer: 'Show movement across transport modes',
   anomaly: 'What demand looks unusual?',
   flow: 'Show passenger movement between locations',
-  limits: 'Show better route suggestions',
+  limits: 'Show the best direct routes',
+}
+
+function initialQuestion() {
+  const query = window.location.hash.split('?')[1]
+  return new URLSearchParams(query || '').get('prompt') || ''
 }
 
 function graphResponse(type, filters) {
@@ -45,7 +50,7 @@ function graphResponse(type, filters) {
 
 export default function AssistantPage() {
   const live = useLiveData()
-  const [question, setQuestion] = useState('')
+  const [question, setQuestion] = useState(initialQuestion)
   const [filters, setFilters] = useState({ ...EMPTY_FILTERS })
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [response, setResponse] = useState(() => graphResponse('mobility_map', EMPTY_FILTERS))

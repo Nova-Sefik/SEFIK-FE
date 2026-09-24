@@ -67,7 +67,10 @@ function applyWhatIf(profile, n) {           // n = trips moved, 0..move_to_hour
 Mock story: line 1709 on Tue 08:00 is at 104 %; moving 2 trips drops it to ~70 %.
 
 ### `GET /api/transfers?day` — journey tracking
-`interchanges[]` {stop_id, name, lat, lon, transfers, worst_median_wait_min, fragile (wait ≥ 10 min), pairs[] {from_operator, to_operator, transfers, median_wait_min, p90_wait_min}, hourly[] {hour, transfers}}; `flows[]` {from_stop_id, from_name, from_lon, from_lat, to_stop_id, to_name, to_lon, to_lat, journeys} → deck.gl `ArcLayer` (`getSourcePosition: d => [d.from_lon, d.from_lat]`). `method` = one sentence to show in a tooltip.
+`interchanges[]` {stop_id, name, lat, lon, transfers, worst_median_wait_min, fragile (wait ≥ 10 min), pairs[] {from_operator, to_operator, transfers, median_wait_min, p90_wait_min}, hourly[] {hour, transfers}}; `flows[]` {from_stop_id, from_name, from_lon, from_lat, to_stop_id, to_name, to_lon, to_lat, journeys, via[] places, modes[], via_share} → a connected path through the actual transfer chain. `method` = one sentence to show in a tooltip.
+
+### `GET /api/golden` — ranked best direct routes
+Returns a typical-weekday ranking that is independent of the day/hour explorer filters. `routes[]` includes the endpoint places, rank and verdict; current multi-vehicle demand and paths plus `shown_paths_share`; current and projected journey minutes; time saved; projected riders and person-hours saved; peak-hour trips needed and `peak_headway_min`; directional shares and volumes (`share_a_to_b`, `share_b_to_a`, `from_to_per_day`, `to_from_per_day`); `demand_top_percent`; hourly demand; affected existing lines with backend `frequency_review_recommended`; transfer hubs relieved; current direct services; and explanatory flags. `method` explains the selection method and `assumptions` contains the projection inputs. The frontend displays these as **Best routes** without recalculating planning metrics.
 
 ### `GET /api/anomalies[?day]` — alerts list
 Omit `day` for the whole week. `alerts[]` sorted by |robust_z| desc: {alert_id, stop_id, name, lat, lon, date, hour, observed, expected, deviation_pct, robust_z, direction "above"|"below", hourly[] {hour, observed, expected}}. Click an alert → set day+hour on the slider and fly to lat/lon. Mock headline: Oriente, Tue 1 Sep 18:00, +151 %.

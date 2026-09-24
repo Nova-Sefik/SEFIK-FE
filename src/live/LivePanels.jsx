@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis } from 'recharts'
 import { liveApi } from './api'
 import { useLiveData } from './LiveDataContext'
 import useLiveQuery from './useLiveQuery'
-import { anomalyColor, applyWhatIf, compact, demandColor, hourLabel, integer, pct, signedPct, waitColor } from './utils'
+import { anomalyColor, applyWhatIf, compact, demandColor, flowKey, hourLabel, integer, pct, signedPct, waitColor } from './utils'
 
 const AXIS = { fontSize: 10, fill: '#80868b' }
 
@@ -199,18 +200,23 @@ function LinePanel() {
 }
 
 function TransferPanel() {
-  const { transfers, selectedTransfer, setSelectedTransfer, openStop } = useLiveData()
+  const { meta, transfers, selectedTransfer, setSelectedTransfer, selectedFlow, setSelectedFlow, openStop } = useLiveData()
   if (transfers.error) return <div className="p-4"><ErrorBox error={transfers.error} /></div>
   if (!transfers.data) return <div className="p-4"><Loading label="Loading transfer evidence…" /></div>
   const data = transfers.data
-  const selected = data.interchanges.find((item) => item.stop_id === selectedTransfer) ?? data.interchanges[0]
+  const operatorById = Object.fromEntries((meta.data?.operators ?? []).map((item) => [item.id, item]))
+  const interchanges = [...data.interchanges].sort((a, b) => b.transfers - a.transfers).slice(0, 20)
+  const selected = interchanges.find((item) => item.stop_id === selectedTransfer) ?? null
+  const flows = data.flows.filter((flow) => !selected || flow.from_stop_id === selected.stop_id || flow.to_stop_id === selected.stop_id
+    || (flow.via ?? []).some((place) => place.stop_id === selected.stop_id)).slice(0, selected ? 20 : 12)
+  const chooseTransfer = (id) => { setSelectedTransfer(id === selectedTransfer ? null : id); setSelectedFlow(null) }
   return (
     <div className="flex flex-col gap-5 p-4">
-      <header><p className="text-[10px] font-medium uppercase tracking-wide text-primary-ink">Cross-operator journeys</p><h2 className="mt-1 text-lg font-medium text-ink">Where journeys change operator</h2></header>
-      <section className="-mx-2">{data.interchanges.map((item) => <button key={item.stop_id} type="button" onClick={() => setSelectedTransfer(item.stop_id)} className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left ${item.stop_id === selected?.stop_id ? 'bg-primary-soft' : 'hover:bg-subtle'}`}><span className="min-w-0 flex-1 truncate text-sm text-ink">{item.name}</span>{item.fragile && <span className="rounded-full bg-danger-soft px-2 py-0.5 text-[9px] text-danger">Fragile</span>}<span className="text-[10px] tabular-nums text-ink-3">{compact.format(item.transfers)}/day</span></button>)}</section>
+      <header><p className="text-[10px] font-medium uppercase tracking-wide text-primary-ink">Cross-operator journeys</p><h2 className="mt-1 text-lg font-medium text-ink">Where journeys change operator</h2>{(selectedTransfer || selectedFlow) && <button type="button" onClick={() => { setSelectedTransfer(null); setSelectedFlow(null) }} className="mt-2 text-[10px] text-primary-ink hover:underline">× Clear selection and show all</button>}</header>
       {selected && <section className="rounded-2xl border border-line p-3"><div className="flex items-center justify-between"><h3 className="text-sm font-medium text-ink">{selected.name}</h3><button type="button" onClick={() => openStop(selected.stop_id)} className="text-[10px] text-primary-ink hover:underline">Stop profile</button></div><div className="mt-3 space-y-2">{selected.pairs.map((pair) => <div key={`${pair.from_operator}-${pair.to_operator}`} className="grid grid-cols-[1fr_auto] gap-2 border-t border-line-soft pt-2 text-[11px]"><span className="text-ink-2">{pair.from_operator} → {pair.to_operator} · {integer.format(pair.transfers)}</span><span style={{ color: waitColor(pair.median_wait_min) }}>{pair.median_wait_min} min median</span></div>)}</div><div className="mt-3"><HourChart height={105} data={selected.hourly.map((item) => ({ hour: item.hour, value: item.transfers, fill: '#8ab4f8' }))} /></div>{selected.fragile && <p className="mt-2 rounded-lg bg-danger-soft px-2.5 py-2 text-[10px] leading-4 text-danger">The worst significant connection has a median wait of {selected.worst_median_wait_min} minutes. Check whether departures can be timed to incoming services.</p>}</section>}
-      <section><SectionTitle>Top journeys with a transfer</SectionTitle>{data.flows.slice(0, 5).map((flow) => <div key={`${flow.from_stop_id}-${flow.to_stop_id}`} className="flex gap-2 border-b border-line-soft py-2 text-[11px]"><span className="flex-1 text-ink-2">{flow.from_name} → {flow.to_name}</span><span className="tabular-nums text-ink-3">{compact.format(flow.journeys)}</span></div>)}</section>
-      <p className="text-[10px] leading-4 text-ink-4">{data.method}</p>
+      <section><SectionTitle>{selected ? `Journeys that change at ${selected.name}` : 'Most common journeys that change operator'}</SectionTitle><div className="-mx-2">{flows.map((flow) => <button key={flowKey(flow)} type="button" onClick={() => setSelectedFlow(flowKey(flow) === selectedFlow ? null : flowKey(flow))} className={`w-full rounded-lg px-2 py-2 text-left ${flowKey(flow) === selectedFlow ? 'bg-primary-soft' : 'hover:bg-subtle'}`}><span className="flex gap-2 text-[11px]"><span className="min-w-0 flex-1 truncate text-ink-2">{flow.from_name} → {flow.to_name}</span><span className="tabular-nums text-ink-3">{compact.format(flow.journeys)}/day</span></span>{flow.modes?.length > 0 && <span className="mt-1 flex flex-wrap items-center gap-1 text-[9px] text-ink-3">{flow.modes.map((mode, index) => <span key={`${mode}-${index}`} className="contents">{index > 0 && <span>→ {flow.via?.[index - 1]?.name || ''} →</span>}<span className="flex items-center gap-1 rounded-full bg-subtle px-1.5 py-0.5"><span className="h-1.5 w-1.5 rounded-full" style={{ background: operatorById[mode]?.color || '#9aa0a6' }} />{operatorById[mode]?.name || mode}</span></span>)}</span>}{flow.via_share != null && flow.via_share < 1 && <span className="mt-1 block text-[9px] text-ink-4">{pct(flow.via_share)} change through this chain</span>}</button>)}</div>{flows.length === 0 && <p className="rounded-lg bg-subtle p-3 text-xs text-ink-3">No top journeys change here.</p>}</section>
+      <section><SectionTitle>Busiest interchanges</SectionTitle><div className="-mx-2">{interchanges.map((item) => <button key={item.stop_id} type="button" onClick={() => chooseTransfer(item.stop_id)} className={`flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left ${item.stop_id === selectedTransfer ? 'bg-primary-soft' : 'hover:bg-subtle'}`}><span className="min-w-0 flex-1 truncate text-sm text-ink">{item.name}</span>{item.fragile && <span className="rounded-full bg-danger-soft px-2 py-0.5 text-[9px] text-danger">Fragile</span>}<span className="text-[10px] tabular-nums text-ink-3">{compact.format(item.transfers)}/day</span></button>)}</div></section>
+      <p className="text-[10px] leading-4 text-ink-4">{data.method} Map paths run from journey origin through the actual interchange chain to the destination.</p>
     </div>
   )
 }
@@ -233,11 +239,107 @@ function AnomalyPanel() {
   )
 }
 
+const VERDICT = {
+  strong: { label: 'Strong', className: 'bg-warn-soft text-warn' },
+  viable: { label: 'Viable', className: 'bg-[#fbefd0] text-[#7a5a10]' },
+  weak: { label: 'Weak', className: 'bg-muted text-ink-3' },
+}
+
+function Verdict({ value }) {
+  const verdict = VERDICT[value] ?? VERDICT.weak
+  return <span className={`rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide ${verdict.className}`}>{verdict.label}</span>
+}
+
+function GoldenPanel() {
+  const { meta, golden, selectedGolden, setSelectedGolden } = useLiveData()
+  const [onlyViable, setOnlyViable] = useState(false)
+  if (golden.error) return <div className="p-4"><ErrorBox error={golden.error} /></div>
+  if (!golden.data) return <div className="p-4"><Loading label="Ranking the best direct routes…" /></div>
+  const data = golden.data
+  const selected = data.routes.find((route) => route.route_id === selectedGolden) ?? null
+  const routes = data.routes.filter((route) => !onlyViable || route.verdict !== 'weak')
+  const operatorById = Object.fromEntries((meta.data?.operators ?? []).map((item) => [item.id, item]))
+
+  if (!selected) {
+    return (
+      <div className="flex flex-col gap-5 p-4">
+        <header>
+          <p className="text-[10px] font-medium uppercase tracking-wide text-primary-ink">Best routes · typical weekday</p>
+          <h2 className="mt-1 text-lg font-medium text-ink">Where a direct line would pay off</h2>
+          <p className="mt-2 text-xs leading-5 text-ink-3">Area pairs where unusually many people need two or more vehicles and a direct service could save time. {data.routes.length} candidates passed the backend screen.</p>
+        </header>
+        <div className="flex w-fit rounded-full border border-line p-0.5">
+          <button type="button" onClick={() => setOnlyViable(false)} className={`rounded-full px-3 py-1 text-[10px] ${!onlyViable ? 'bg-primary-soft text-primary-ink' : 'text-ink-3'}`}>All</button>
+          <button type="button" onClick={() => setOnlyViable(true)} className={`rounded-full px-3 py-1 text-[10px] ${onlyViable ? 'bg-primary-soft text-primary-ink' : 'text-ink-3'}`}>Strong + viable</button>
+        </div>
+        <section className="-mx-2">
+          {routes.map((route) => (
+            <button key={route.route_id} type="button" onClick={() => setSelectedGolden(route.route_id)} className="w-full rounded-xl px-2 py-2.5 text-left hover:bg-subtle">
+              <span className="flex items-center gap-2"><span className="text-[10px] tabular-nums text-ink-4">#{route.rank}</span><span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{route.from.name} ↔ {route.to.name}</span><Verdict value={route.verdict} /></span>
+              <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 pl-6 text-[10px] text-ink-3"><span><strong className="text-ink">{compact.format(route.multi_per_day)}</strong>/day need 2+ vehicles</span><span>saves <strong className="text-ink">{Math.round(route.saved_min ?? 0)} min</strong></span><span>{route.distance_km.toFixed(1)} km</span></span>
+            </button>
+          ))}
+          {!routes.length && <p className="rounded-xl bg-subtle p-3 text-xs text-ink-3">No routes match this verdict filter.</p>}
+        </section>
+        <p className="text-[10px] leading-4 text-ink-4">{data.method}</p>
+      </div>
+    )
+  }
+
+  const maxImpact = Math.max(0.01, ...selected.replaced.map((item) => item.share_of_line ?? 0))
+  const flagClasses = {
+    benefit: 'border-good/20 bg-good-soft text-good',
+    info: 'border-primary/20 bg-primary-soft text-primary-ink',
+    risk: 'border-danger/20 bg-danger-soft text-danger',
+  }
+  const prompt = encodeURIComponent(`Assess the best direct route between ${selected.from.name} and ${selected.to.name} using the live golden-route evidence`)
+
+  return (
+    <div className="flex flex-col gap-5 p-4">
+      <header>
+        <button type="button" onClick={() => setSelectedGolden(null)} className="mb-2 text-xs text-primary-ink hover:underline">← All best routes</button>
+        <div className="flex items-start justify-between gap-2"><div><p className="text-[10px] font-medium uppercase tracking-wide text-primary-ink">Best route · typical weekday</p><h2 className="mt-1 text-lg font-medium text-ink">{selected.from.name} ↔ {selected.to.name}</h2></div><Verdict value={selected.verdict} /></div>
+        <p className="mt-2 text-[10px] text-ink-3">#{selected.rank} · {selected.distance_km.toFixed(1)} km · demand volume ≈ top {selected.demand_top_percent}% of area pairs</p>
+        <a href={`#/assistant?prompt=${prompt}`} className="mt-3 inline-flex rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-hover">Ask AI to assess this route →</a>
+      </header>
+
+      <section className="grid grid-cols-2 gap-2">
+        <Kpi value={compact.format(selected.multi_per_day)} label={`Journeys/day need 2+ vehicles · ${pct(selected.multi_share)} of trips`} />
+        <Kpi value={`${Math.round(selected.current_min ?? 0)} → ${Math.round(selected.projected_min)} min`} label={`Current → projected · saves ${Math.round(selected.saved_min ?? 0)} min`} tone="border-warn/25 bg-warn-soft" />
+        <Kpi value={compact.format(selected.riders_per_day)} label="Projected riders/day" detail={`${integer.format(selected.person_hours_per_day ?? 0)} person-hours saved daily`} />
+        <Kpi value={selected.peak_hour == null ? '–' : hourLabel(selected.peak_hour)} label={`Peak · ~${Math.round(selected.peak_riders ?? 0)} riders/hour`} detail={selected.trips_needed_peak ? `${selected.trips_needed_peak} buses/hour${selected.peak_headway_min ? ` · every ${selected.peak_headway_min} min` : ''}` : ''} />
+      </section>
+
+      {selected.flags.length > 0 && <section className="space-y-1.5">{selected.flags.map((flag, index) => <div key={`${flag.level}-${index}`} className={`flex gap-2 rounded-xl border px-3 py-2 text-[11px] leading-4 ${flagClasses[flag.level]}`}><strong>{flag.level === 'benefit' ? '✓' : flag.level === 'risk' ? '!' : 'i'}</strong><span>{flag.text}</span></div>)}</section>}
+
+      <section>
+        <SectionTitle>How people make this trip today</SectionTitle>
+        <div className="space-y-2">{selected.paths.map((path, index) => <div key={index} className="rounded-xl border border-line-soft p-2.5"><div className="flex flex-wrap items-center gap-1">{path.legs.map((leg, legIndex) => <span key={`${leg.line_id}-${legIndex}`} className="contents">{legIndex > 0 && <span className="text-[9px] text-ink-4">→ {path.via[legIndex - 1]?.name || ''} →</span>}<span className="flex items-center gap-1 rounded-full bg-subtle px-2 py-1 text-[9px] text-ink-2" title={leg.name}><span className="h-2 w-2 rounded-full" style={{ background: operatorById[leg.operator]?.color || '#9aa0a6' }} />{leg.operator === 'metro' ? 'Metro' : `${operatorById[leg.operator]?.name || leg.operator} ${leg.label}`}</span></span>)}</div><p className="mt-1 text-right text-[9px] tabular-nums text-ink-4">{integer.format(path.journeys_per_day)}/day · {pct(path.share)}</p></div>)}</div>
+      </section>
+
+      <section>
+        <SectionTitle>What it would take off existing lines</SectionTitle>
+        <div className="space-y-2">{selected.replaced.map((item) => <div key={`${item.operator}-${item.line_id}`} className="grid grid-cols-[minmax(0,1fr)_5rem_auto] items-center gap-2 text-[10px]"><span className="truncate text-ink-2" title={item.name}>{item.operator === 'metro' ? 'Metro' : `${operatorById[item.operator]?.name || item.operator} ${item.label}`}</span><span className="h-2 overflow-hidden rounded-full bg-muted"><span className={`block h-full rounded-full ${item.frequency_review_recommended ? 'bg-danger' : 'bg-warn'}`} style={{ width: `${Math.max(4, ((item.share_of_line ?? 0) / maxImpact) * 100)}%` }} /></span><span className="tabular-nums text-ink-3">−{compact.format(item.riders_removed_per_day)} · {item.share_of_line == null ? '–' : pct(item.share_of_line)}</span></div>)}</div>
+        <p className="mt-2 text-[9px] leading-4 text-ink-4">Red means the proposed route could remove at least 15% of an existing line’s weekday riders, so frequency should be reviewed.</p>
+      </section>
+
+      {selected.hubs.length > 0 && <section><SectionTitle>Transfer pressure removed</SectionTitle>{selected.hubs.map((hub) => <div key={hub.stop_id} className="flex gap-2 border-b border-line-soft py-2 text-[10px]"><span className="min-w-0 flex-1 truncate text-ink-2">{hub.name}</span><span className="tabular-nums text-ink-3">−{compact.format(hub.transfers_removed_per_day)}/day · {hub.share_of_hub == null ? '–' : pct(hub.share_of_hub)}</span></div>)}</section>}
+
+      {selected.direct_lines.length > 0 && <section><SectionTitle>Direct options already used</SectionTitle>{selected.direct_lines.map((line) => <div key={`${line.operator}-${line.line_id}`} className="flex gap-2 border-b border-line-soft py-2 text-[10px]"><span className="min-w-0 flex-1 truncate text-ink-2" title={line.name}>{line.operator === 'metro' ? 'Metro' : `${operatorById[line.operator]?.name || line.operator} ${line.label}`} · {line.name}</span><span className="tabular-nums text-ink-3">{compact.format(line.journeys_per_day)}/day</span></div>)}</section>}
+
+      <section><SectionTitle>When multi-vehicle journeys happen</SectionTitle><HourChart height={125} data={selected.hourly.map((item) => ({ hour: item.hour, value: item.journeys, fill: item.hour === selected.peak_hour ? '#b06000' : '#fdd663' }))} />{selected.share_a_to_b != null && selected.share_b_to_a != null && <p className="mt-1 text-[10px] text-ink-4">{pct(selected.share_a_to_b)} travel {selected.from.name} → {selected.to.name}; {pct(selected.share_b_to_a)} travel the other way.</p>}</section>
+
+      <p className="text-[10px] leading-4 text-ink-4">{data.method} {data.assumptions.golden_capture != null && `Projection: ${pct(data.assumptions.golden_capture)} switch · ${data.assumptions.golden_bus_kmh} km/h bus · ${data.assumptions.golden_detour}× road detour · ${data.assumptions.golden_avg_wait_min} min average wait · ${data.assumptions.golden_bus_places} places.`}</p>
+    </div>
+  )
+}
+
 export default function LiveSidePanel() {
   const { mode, selectedStop } = useLiveData()
   if (mode === 'demand' && selectedStop) return <StopPanel />
   if (mode === 'load') return <LinePanel />
   if (mode === 'transfers') return <TransferPanel />
+  if (mode === 'golden') return <GoldenPanel />
   if (mode === 'anomalies') return <AnomalyPanel />
   return <OverviewPanel />
 }

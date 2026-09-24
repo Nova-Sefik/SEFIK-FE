@@ -55,3 +55,14 @@ export function curve(from, to, bend = 0.2) {
     ]
   })
 }
+
+export function chain(points, bend = 0.18) {
+  const output = []
+  for (let index = 0; index < points.length - 1; index += 1) {
+    const segment = curve(points[index], points[index + 1], bend)
+    output.push(...(index === 0 ? segment : segment.slice(1)))
+  }
+  return output
+}
+
+export const flowKey = (flow) => `${flow.from_stop_id}>${flow.to_stop_id}`

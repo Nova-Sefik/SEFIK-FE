@@ -9,6 +9,7 @@ const MODES = [
   { id: 'load', label: 'Load vs capacity', hint: 'Where is service under pressure?' },
   { id: 'anomalies', label: 'Anomalies', hint: 'What is different from expected?' },
   { id: 'transfers', label: 'Transfers', hint: 'Where do journeys change operator?' },
+  { id: 'golden', label: 'Best routes', hint: 'Where would a direct line save the most time?' },
 ]
 
 function Segmented({ options, value, onChange, label, small = false }) {
@@ -41,7 +42,7 @@ function Timeline() {
 export default function App() {
   const {
     meta, overview, mode, setMode, layer, setLayer, day, setDay, ops, toggleOperator,
-    segment, setSegment, setSelectedStop, setSelectedAlert, setWhatif,
+    segment, setSegment, setSelectedStop, setSelectedAlert, setSelectedFlow, setSelectedGolden, setWhatif,
   } = useLiveData()
 
   if (meta.error) {
@@ -62,6 +63,8 @@ export default function App() {
     setMode(nextMode)
     setSelectedStop(null)
     setSelectedAlert(null)
+    setSelectedFlow(null)
+    setSelectedGolden(null)
     setWhatif(0)
   }
 

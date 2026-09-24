@@ -80,7 +80,12 @@ function FitEvidence({ coordinates }) {
 function directionRows(evidence) {
   const rows = []
   for (const item of evidence.slice(0, 30)) {
-    if (item.from_zone !== undefined && item.to_zone !== undefined) {
+    if (item.from_place && item.to_place) {
+      const shared = { ...item, a: item.from_place.stop_id, b: item.to_place.stop_id }
+      if (item.from_to > 0) rows.push({ ...shared, id: `${item.key}-forward`, fromPoint: item.from_place, toPoint: item.to_place, value: item.from_to, direction: `${item.from} → ${item.to}` })
+      if (item.to_from > 0) rows.push({ ...shared, id: `${item.key}-reverse`, a: item.to_place.stop_id, b: item.from_place.stop_id, fromPoint: item.to_place, toPoint: item.from_place, value: item.to_from, direction: `${item.to} → ${item.from}` })
+      if (item.from_to === undefined && item.supported_journeys > 0) rows.push({ ...shared, id: item.key, fromPoint: item.from_place, toPoint: item.to_place, value: item.supported_journeys, direction: `${item.from} → ${item.to}` })
+    } else if (item.from_zone !== undefined && item.to_zone !== undefined) {
       if (item.from_to !== undefined) {
         if (item.from_to > 0) rows.push({ ...item, id: `${item.key}-forward`, a: Number(item.from_zone), b: Number(item.to_zone), value: item.from_to, direction: `${item.from} → ${item.to}` })
         if (item.to_from > 0) rows.push({ ...item, id: `${item.key}-reverse`, a: Number(item.to_zone), b: Number(item.from_zone), value: item.to_from, direction: `${item.to} → ${item.from}` })
@@ -91,7 +96,7 @@ function directionRows(evidence) {
       rows.push({ ...item, id: item.key, a: Number(item.hub), b: Number(item.to), value: item.n, direction: `${item.hubName} → ${item.toName}` })
     }
   }
-  return rows.filter((row) => zones[row.a] && zones[row.b] && row.value > 0)
+  return rows.filter((row) => ((row.fromPoint && row.toPoint) || (zones[row.a] && zones[row.b])) && row.value > 0)
 }
 
 function pointRows(evidence) {
@@ -111,7 +116,7 @@ export default function DirectionalMap({ evidence, intent, overlays = [] }) {
   const directions = useMemo(() => directionRows(evidence), [evidence])
   const points = useMemo(() => pointRows(evidence), [evidence])
   const corridorOverlays = useMemo(
-    () => overlays.filter((item) => item.kind === 'corridor' && zones[Number(item.from_zone)] && zones[Number(item.to_zone)]),
+    () => overlays.filter((item) => item.kind === 'corridor' && ((item.from_point && item.to_point) || (zones[Number(item.from_zone)] && zones[Number(item.to_zone)]))),
     [overlays],
   )
   const stopOverlays = useMemo(
@@ -126,8 +131,14 @@ export default function DirectionalMap({ evidence, intent, overlays = [] }) {
     1,
   )
   const endpoints = useMemo(() => {
-    const ids = new Set(directions.flatMap((row) => [row.a, row.b]))
-    return [...ids].map((id) => ({ id, ...zones[id] }))
+    const byId = new Map()
+    directions.forEach((row) => {
+      const from = row.fromPoint ?? zones[row.a]
+      const to = row.toPoint ?? zones[row.b]
+      byId.set(row.a, { id: row.a, ...from })
+      byId.set(row.b, { id: row.b, ...to })
+    })
+    return [...byId.values()]
   }, [directions])
   const coordinates = useMemo(() => [
     ...endpoints.map((zone) => [zone.lat, zone.lon]),
@@ -145,7 +156,7 @@ export default function DirectionalMap({ evidence, intent, overlays = [] }) {
         <FitEvidence coordinates={coordinates} />
 
         {directions.map((row) => {
-          const positions = curve(zones[row.a], zones[row.b])
+          const positions = curve(row.fromPoint ?? zones[row.a], row.toPoint ?? zones[row.b])
           const traffic = trafficBand(row.value, maxDirection)
           const weight = 2 + 13 * Math.sqrt(row.value / maxDirection)
           return (
@@ -167,8 +178,8 @@ export default function DirectionalMap({ evidence, intent, overlays = [] }) {
         })}
 
         {corridorOverlays.map((proposal) => {
-          const from = zones[Number(proposal.from_zone)]
-          const to = zones[Number(proposal.to_zone)]
+          const from = proposal.from_point ?? zones[Number(proposal.from_zone)]
+          const to = proposal.to_point ?? zones[Number(proposal.to_zone)]
           const positions = curve(from, to, 0.32)
           const reversePositions = [...positions].reverse()
           const style = proposalStyle(proposal.action)
