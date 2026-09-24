@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* Google-style tokens: white surfaces, hairline grey borders, one blue accent */
+@theme {
+  --font-sans: "Google Sans", "Google Sans Text", Roboto, Arial, sans-serif;
+
+  --color-page: #ffffff;
+  --color-surface: #ffffff;
+  --color-subtle: #f8f9fa;
+  --color-muted: #f1f3f4;
+  --color-line: #dadce0;
+  --color-line-soft: #e8eaed;
+
+  --color-ink: #202124;
+  --color-ink-2: #3c4043;
+  --color-ink-3: #5f6368;
+  --color-ink-4: #80868b;
+
+  --color-primary: #1a73e8;
+  --color-primary-hover: #1765cc;
+  --color-primary-ink: #1967d2;
+  --color-primary-soft: #e8f0fe;
+  --color-primary-soft-2: #d2e3fc;
+
+  --color-danger: #d93025;
+  --color-danger-soft: #fce8e6;
+  --color-good: #188038;
+  --color-good-soft: #e6f4ea;
+  --color-warn: #b06000;
+  --color-warn-soft: #fef7e0;
+
+  --shadow-card: 0 1px 2px 0 rgb(60 64 67 / 0.3), 0 1px 3px 1px rgb(60 64 67 / 0.15);
+  --shadow-float: 0 1px 3px 0 rgb(60 64 67 / 0.3), 0 4px 8px 3px rgb(60 64 67 / 0.15);
+}
+
+body {
+  background: #ffffff;
+  color: #202124;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Time slider: native range input laid over the demand curve */
+.timeline-range {
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+}
+.timeline-range::-webkit-slider-runnable-track {
+  height: 100%;
+  background: transparent;
+}
+.timeline-range::-moz-range-track {
+  height: 100%;
+  background: transparent;
+}
+.timeline-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 41px;
+  border-radius: 9999px;
+  background: #1a73e8;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 3px rgb(60 64 67 / 0.45);
+}
+.timeline-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #1a73e8;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 3px rgb(60 64 67 / 0.45);
+  transform: translateY(20px);
+}
+.timeline-range:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Flow lines: dashes march in the direction of travel */
+.flow-line {
+  stroke-dasharray: 10 8;
+  animation: flow-dash 1.2s linear infinite;
+}
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-line {
+    animation: none;
+  }
+}
+
+/* Leaflet in the light theme */
+.leaflet-container .leaflet-interactive:focus {
+  outline: none;
+}
+.leaflet-container {
+  background: #f1f3f4;
+  font: inherit;
+}
+.leaflet-container .leaflet-tooltip {
+  background: #ffffff;
+  color: #202124;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgb(60 64 67 / 0.3), 0 4px 8px 3px rgb(60 64 67 / 0.15);
+  font-size: 12px;
+  padding: 6px 10px;
+}
+.leaflet-container .leaflet-tooltip-top::before {
+  border-top-color: #ffffff;
+}
+.leaflet-container .leaflet-tooltip-right::before {
+  border-right-color: #ffffff;
+}
+.leaflet-container .leaflet-tooltip.zone-label {
+  background: rgb(255 255 255 / 0.92);
+  border: none;
+  box-shadow: 0 1px 2px rgb(60 64 67 / 0.3);
+  padding: 1px 7px;
+  color: #202124;
+  font-size: 11px;
+  font-weight: 500;
+}
+.leaflet-container .leaflet-tooltip.zone-label::before {
+  display: none;
+}
+.leaflet-bar {
+  border: none !important;
+  box-shadow: 0 1px 2px 0 rgb(60 64 67 / 0.3), 0 1px 3px 1px rgb(60 64 67 / 0.15) !important;
+}
+.leaflet-bar a {
+  color: #5f6368 !important;
+}
+.leaflet-control-attribution {
+  background: rgb(255 255 255 / 0.8) !important;
+  color: #80868b !important;
+}
+.leaflet-control-attribution a {
+  color: #5f6368 !important;
+}

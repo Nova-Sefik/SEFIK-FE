@@ -1,0 +1,4250 @@
+{
+  "_readme": "One real response per endpoint from the Pulso mock API. Request = the 'request' field; body = 'response'. Numbers are invented; shapes are final.",
+  "samples": {
+    "meta": {
+      "request": "GET /api/meta",
+      "status": 200,
+      "response": {
+        "is_mock": true,
+        "week_start": "2026-08-31",
+        "week_end": "2026-09-06",
+        "note": "MOCK DATA — invented numbers with the real response shapes. Do not quote as findings.",
+        "days": [
+          {
+            "date": "2026-08-31",
+            "label": "Mon 31 Aug",
+            "weekday": "Mon",
+            "is_weekend": false
+          },
+          {
+            "date": "2026-09-01",
+            "label": "Tue 1 Sep",
+            "weekday": "Tue",
+            "is_weekend": false
+          },
+          {
+            "date": "2026-09-02",
+            "label": "Wed 2 Sep",
+            "weekday": "Wed",
+            "is_weekend": false
+          },
+          {
+            "date": "2026-09-03",
+            "label": "Thu 3 Sep",
+            "weekday": "Thu",
+            "is_weekend": false
+          },
+          {
+            "date": "2026-09-04",
+            "label": "Fri 4 Sep",
+            "weekday": "Fri",
+            "is_weekend": false
+          },
+          {
+            "date": "2026-09-05",
+            "label": "Sat 5 Sep",
+            "weekday": "Sat",
+            "is_weekend": true
+          },
+          {
+            "date": "2026-09-06",
+            "label": "Sun 6 Sep",
+            "weekday": "Sun",
+            "is_weekend": true
+          }
+        ],
+        "hours": [
+          {
+            "hour": 5,
+            "label": "05:00"
+          },
+          {
+            "hour": 6,
+            "label": "06:00"
+          },
+          {
+            "hour": 7,
+            "label": "07:00"
+          },
+          {
+            "hour": 8,
+            "label": "08:00"
+          },
+          {
+            "hour": 9,
+            "label": "09:00"
+          },
+          {
+            "hour": 10,
+            "label": "10:00"
+          },
+          {
+            "hour": 11,
+            "label": "11:00"
+          },
+          {
+            "hour": 12,
+            "label": "12:00"
+          },
+          {
+            "hour": 13,
+            "label": "13:00"
+          },
+          {
+            "hour": 14,
+            "label": "14:00"
+          },
+          {
+            "hour": 15,
+            "label": "15:00"
+          },
+          {
+            "hour": 16,
+            "label": "16:00"
+          },
+          {
+            "hour": 17,
+            "label": "17:00"
+          },
+          {
+            "hour": 18,
+            "label": "18:00"
+          },
+          {
+            "hour": 19,
+            "label": "19:00"
+          },
+          {
+            "hour": 20,
+            "label": "20:00"
+          },
+          {
+            "hour": 21,
+            "label": "21:00"
+          },
+          {
+            "hour": 22,
+            "label": "22:00"
+          },
+          {
+            "hour": 23,
+            "label": "23:00"
+          },
+          {
+            "hour": 24,
+            "label": "00:00"
+          }
+        ],
+        "operators": [
+          {
+            "id": "metro",
+            "name": "Metro",
+            "color": "#2a78d6",
+            "agency_codes": [
+              "2"
+            ]
+          },
+          {
+            "id": "carris",
+            "name": "Carris",
+            "color": "#eb6834",
+            "agency_codes": [
+              "1"
+            ]
+          },
+          {
+            "id": "cm",
+            "name": "Carris Metropolitana",
+            "color": "#1baf7a",
+            "agency_codes": [
+              "41",
+              "42",
+              "43",
+              "44"
+            ]
+          },
+          {
+            "id": "rail",
+            "name": "Rail (CP, Fertagus)",
+            "color": "#eda100",
+            "agency_codes": [
+              "3",
+              "15"
+            ]
+          },
+          {
+            "id": "ferry",
+            "name": "Ferries (Transtejo)",
+            "color": "#e87ba4",
+            "agency_codes": [
+              "4"
+            ]
+          },
+          {
+            "id": "other",
+            "name": "Other operators",
+            "color": "#008300",
+            "agency_codes": [
+              "8",
+              "16",
+              "21"
+            ]
+          }
+        ],
+        "segments": [
+          {
+            "id": "all",
+            "label": "All passengers"
+          },
+          {
+            "id": "sub23",
+            "label": "Sub-23"
+          },
+          {
+            "id": "senior",
+            "label": "65+"
+          }
+        ],
+        "hex_resolution": 8,
+        "scales": {
+          "stop_boardings_max": 4308.2,
+          "hex_boardings_max": 2139.7,
+          "network_hour_max": 46947.8
+        },
+        "lines": [
+          {
+            "line_id": "1709",
+            "label": "1709",
+            "name": "Amadora Este ↔ Colégio Militar",
+            "mode": "bus",
+            "operator": "cm"
+          },
+          {
+            "line_id": "3001",
+            "label": "3001",
+            "name": "Pragal ↔ Cacilhas (Terminal)",
+            "mode": "bus",
+            "operator": "cm"
+          },
+          {
+            "line_id": "1733",
+            "label": "1733",
+            "name": "Pontinha ↔ Sete Rios",
+            "mode": "bus",
+            "operator": "cm"
+          },
+          {
+            "line_id": "CA-CS",
+            "label": "Cacilhas–Cais do Sodré",
+            "name": "Ferry Cacilhas → Cais do Sodré",
+            "mode": "ferry",
+            "operator": "ferry"
+          }
+        ]
+      }
+    },
+    "overview": {
+      "request": "GET /api/overview?day=2026-09-01",
+      "status": 200,
+      "response": {
+        "date": "2026-09-01",
+        "kpis": {
+          "boardings": 449096,
+          "busiest_hour": 8,
+          "transfers": 40750,
+          "alerts": 1
+        },
+        "operator_share": [
+          {
+            "operator": "metro",
+            "boardings": 214484,
+            "share": 0.4831
+          },
+          {
+            "operator": "carris",
+            "boardings": 81132,
+            "share": 0.1827
+          },
+          {
+            "operator": "cm",
+            "boardings": 53137,
+            "share": 0.1197
+          },
+          {
+            "operator": "rail",
+            "boardings": 56191,
+            "share": 0.1266
+          },
+          {
+            "operator": "ferry",
+            "boardings": 28727,
+            "share": 0.0647
+          },
+          {
+            "operator": "other",
+            "boardings": 10326,
+            "share": 0.0233
+          }
+        ],
+        "network_hourly": [
+          {
+            "hour": 5,
+            "boardings": 4237.0
+          },
+          {
+            "hour": 6,
+            "boardings": 14832.9
+          },
+          {
+            "hour": 7,
+            "boardings": 36225.8
+          },
+          {
+            "hour": 8,
+            "boardings": 46947.8
+          },
+          {
+            "hour": 9,
+            "boardings": 33973.6
+          },
+          {
+            "hour": 10,
+            "boardings": 21346.1
+          },
+          {
+            "hour": 11,
+            "boardings": 19114.4
+          },
+          {
+            "hour": 12,
+            "boardings": 20375.5
+          },
+          {
+            "hour": 13,
+            "boardings": 21250.6
+          },
+          {
+            "hour": 14,
+            "boardings": 20541.3
+          },
+          {
+            "hour": 15,
+            "boardings": 22085.1
+          },
+          {
+            "hour": 16,
+            "boardings": 26424.4
+          },
+          {
+            "hour": 17,
+            "boardings": 36011.0
+          },
+          {
+            "hour": 18,
+            "boardings": 44828.2
+          },
+          {
+            "hour": 19,
+            "boardings": 29802.8
+          },
+          {
+            "hour": 20,
+            "boardings": 19185.0
+          },
+          {
+            "hour": 21,
+            "boardings": 12795.0
+          },
+          {
+            "hour": 22,
+            "boardings": 9319.1
+          },
+          {
+            "hour": 23,
+            "boardings": 6400.1
+          },
+          {
+            "hour": 24,
+            "boardings": 3400.5
+          }
+        ],
+        "top_interchanges": [
+          {
+            "stop_id": "campogrande",
+            "name": "Campo Grande",
+            "transfers": 7800
+          },
+          {
+            "stop_id": "caisdosodre",
+            "name": "Cais do Sodré",
+            "transfers": 7750
+          },
+          {
+            "stop_id": "marques",
+            "name": "Marquês de Pombal",
+            "transfers": 6300
+          },
+          {
+            "stop_id": "oriente",
+            "name": "Oriente",
+            "transfers": 6300
+          }
+        ]
+      }
+    },
+    "hex": {
+      "request": "GET /api/hex?day=2026-09-01&hour=8",
+      "status": 200,
+      "response": {
+        "date": "2026-09-01",
+        "hour": 8,
+        "resolution": 8,
+        "cells": [
+          {
+            "h3": "88393360d9fffff",
+            "boardings": 2139.7,
+            "expected": 2105.2,
+            "ratio": 1.016
+          },
+          {
+            "h3": "88393362b3fffff",
+            "boardings": 1876.4,
+            "expected": 1852.1,
+            "ratio": 1.013
+          },
+          {
+            "h3": "8839336765fffff",
+            "boardings": 1622.1,
+            "expected": 1612.6,
+            "ratio": 1.006
+          },
+          {
+            "h3": "88393362b7fffff",
+            "boardings": 1416.3,
+            "expected": 1383.6,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336297fffff",
+            "boardings": 1241.9,
+            "expected": 1244.9,
+            "ratio": 0.998
+          },
+          {
+            "h3": "8839336295fffff",
+            "boardings": 1227.1,
+            "expected": 1244.1,
+            "ratio": 0.986
+          },
+          {
+            "h3": "8839336291fffff",
+            "boardings": 1220.2,
+            "expected": 1198.4,
+            "ratio": 1.018
+          },
+          {
+            "h3": "88393362bbfffff",
+            "boardings": 1208.7,
+            "expected": 1228.3,
+            "ratio": 0.984
+          },
+          {
+            "h3": "8839336293fffff",
+            "boardings": 1189.6,
+            "expected": 1161.6,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393362dbfffff",
+            "boardings": 1003.6,
+            "expected": 995.5,
+            "ratio": 1.008
+          },
+          {
+            "h3": "8839336089fffff",
+            "boardings": 931.8,
+            "expected": 914.2,
+            "ratio": 1.019
+          },
+          {
+            "h3": "883933629bfffff",
+            "boardings": 931.1,
+            "expected": 906.7,
+            "ratio": 1.027
+          },
+          {
+            "h3": "88393362d3fffff",
+            "boardings": 917.2,
+            "expected": 904.5,
+            "ratio": 1.014
+          },
+          {
+            "h3": "88393375b3fffff",
+            "boardings": 884.6,
+            "expected": 905.8,
+            "ratio": 0.977
+          },
+          {
+            "h3": "883933666dfffff",
+            "boardings": 862.3,
+            "expected": 883.0,
+            "ratio": 0.977
+          },
+          {
+            "h3": "88393375adfffff",
+            "boardings": 851.8,
+            "expected": 843.1,
+            "ratio": 1.01
+          },
+          {
+            "h3": "8839336299fffff",
+            "boardings": 848.2,
+            "expected": 828.2,
+            "ratio": 1.024
+          },
+          {
+            "h3": "883933676dfffff",
+            "boardings": 829.4,
+            "expected": 831.6,
+            "ratio": 0.997
+          },
+          {
+            "h3": "88393375a5fffff",
+            "boardings": 791.2,
+            "expected": 775.1,
+            "ratio": 1.021
+          },
+          {
+            "h3": "88393375bbfffff",
+            "boardings": 720.6,
+            "expected": 738.0,
+            "ratio": 0.977
+          },
+          {
+            "h3": "88393362d7fffff",
+            "boardings": 669.8,
+            "expected": 658.0,
+            "ratio": 1.018
+          },
+          {
+            "h3": "8839336529fffff",
+            "boardings": 657.1,
+            "expected": 650.5,
+            "ratio": 1.01
+          },
+          {
+            "h3": "88393362b1fffff",
+            "boardings": 631.1,
+            "expected": 626.9,
+            "ratio": 1.007
+          },
+          {
+            "h3": "88393362b9fffff",
+            "boardings": 627.0,
+            "expected": 643.1,
+            "ratio": 0.975
+          },
+          {
+            "h3": "883933629dfffff",
+            "boardings": 605.7,
+            "expected": 598.7,
+            "ratio": 1.012
+          },
+          {
+            "h3": "883933674dfffff",
+            "boardings": 592.9,
+            "expected": 578.2,
+            "ratio": 1.025
+          },
+          {
+            "h3": "8839336767fffff",
+            "boardings": 586.0,
+            "expected": 594.4,
+            "ratio": 0.986
+          },
+          {
+            "h3": "883933628bfffff",
+            "boardings": 541.2,
+            "expected": 532.5,
+            "ratio": 1.016
+          },
+          {
+            "h3": "88393362cbfffff",
+            "boardings": 506.6,
+            "expected": 507.2,
+            "ratio": 0.999
+          },
+          {
+            "h3": "88393375e7fffff",
+            "boardings": 498.6,
+            "expected": 494.8,
+            "ratio": 1.008
+          },
+          {
+            "h3": "88393360c7fffff",
+            "boardings": 490.0,
+            "expected": 481.4,
+            "ratio": 1.018
+          },
+          {
+            "h3": "88393362d1fffff",
+            "boardings": 475.6,
+            "expected": 470.3,
+            "ratio": 1.011
+          },
+          {
+            "h3": "88393362d5fffff",
+            "boardings": 474.1,
+            "expected": 466.8,
+            "ratio": 1.016
+          },
+          {
+            "h3": "8839336745fffff",
+            "boardings": 459.0,
+            "expected": 447.7,
+            "ratio": 1.025
+          },
+          {
+            "h3": "8839337535fffff",
+            "boardings": 426.6,
+            "expected": 429.3,
+            "ratio": 0.994
+          },
+          {
+            "h3": "8839336769fffff",
+            "boardings": 425.4,
+            "expected": 420.0,
+            "ratio": 1.013
+          },
+          {
+            "h3": "8839336283fffff",
+            "boardings": 410.9,
+            "expected": 416.0,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336761fffff",
+            "boardings": 381.3,
+            "expected": 386.3,
+            "ratio": 0.987
+          },
+          {
+            "h3": "8839337525fffff",
+            "boardings": 351.7,
+            "expected": 356.0,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336051fffff",
+            "boardings": 338.2,
+            "expected": 330.3,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336053fffff",
+            "boardings": 330.5,
+            "expected": 321.4,
+            "ratio": 1.029
+          },
+          {
+            "h3": "88393362a3fffff",
+            "boardings": 326.7,
+            "expected": 337.3,
+            "ratio": 0.969
+          },
+          {
+            "h3": "883933605dfffff",
+            "boardings": 322.8,
+            "expected": 325.0,
+            "ratio": 0.993
+          },
+          {
+            "h3": "883933604bfffff",
+            "boardings": 318.4,
+            "expected": 322.3,
+            "ratio": 0.988
+          },
+          {
+            "h3": "88393365dbfffff",
+            "boardings": 305.8,
+            "expected": 294.8,
+            "ratio": 1.038
+          },
+          {
+            "h3": "88393375b1fffff",
+            "boardings": 298.3,
+            "expected": 305.4,
+            "ratio": 0.977
+          },
+          {
+            "h3": "88393362ddfffff",
+            "boardings": 294.9,
+            "expected": 293.8,
+            "ratio": 1.004
+          },
+          {
+            "h3": "8839337513fffff",
+            "boardings": 286.2,
+            "expected": 280.8,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393362c3fffff",
+            "boardings": 284.2,
+            "expected": 283.0,
+            "ratio": 1.004
+          },
+          {
+            "h3": "88393362c9fffff",
+            "boardings": 277.7,
+            "expected": 278.9,
+            "ratio": 0.995
+          },
+          {
+            "h3": "8839337597fffff",
+            "boardings": 274.7,
+            "expected": 280.9,
+            "ratio": 0.978
+          },
+          {
+            "h3": "88393375a7fffff",
+            "boardings": 263.9,
+            "expected": 257.6,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393375e5fffff",
+            "boardings": 260.7,
+            "expected": 258.8,
+            "ratio": 1.008
+          },
+          {
+            "h3": "88393362d9fffff",
+            "boardings": 234.8,
+            "expected": 233.2,
+            "ratio": 1.007
+          },
+          {
+            "h3": "88393362b5fffff",
+            "boardings": 232.3,
+            "expected": 230.2,
+            "ratio": 1.009
+          },
+          {
+            "h3": "8839337537fffff",
+            "boardings": 229.7,
+            "expected": 230.3,
+            "ratio": 0.997
+          },
+          {
+            "h3": "88393362a1fffff",
+            "boardings": 227.0,
+            "expected": 234.4,
+            "ratio": 0.969
+          },
+          {
+            "h3": "88393360e3fffff",
+            "boardings": 225.0,
+            "expected": 231.0,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839337523fffff",
+            "boardings": 219.9,
+            "expected": 221.8,
+            "ratio": 0.992
+          },
+          {
+            "h3": "8839336289fffff",
+            "boardings": 209.3,
+            "expected": 206.1,
+            "ratio": 1.016
+          },
+          {
+            "h3": "883933608dfffff",
+            "boardings": 206.0,
+            "expected": 205.0,
+            "ratio": 1.005
+          },
+          {
+            "h3": "883933652bfffff",
+            "boardings": 203.4,
+            "expected": 201.4,
+            "ratio": 1.01
+          },
+          {
+            "h3": "88393362c1fffff",
+            "boardings": 191.9,
+            "expected": 191.9,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839337521fffff",
+            "boardings": 189.6,
+            "expected": 191.8,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839337511fffff",
+            "boardings": 189.5,
+            "expected": 185.9,
+            "ratio": 1.019
+          },
+          {
+            "h3": "883933751bfffff",
+            "boardings": 187.1,
+            "expected": 183.6,
+            "ratio": 1.019
+          },
+          {
+            "h3": "883933652dfffff",
+            "boardings": 186.2,
+            "expected": 184.3,
+            "ratio": 1.011
+          },
+          {
+            "h3": "8839336763fffff",
+            "boardings": 184.8,
+            "expected": 189.9,
+            "ratio": 0.973
+          },
+          {
+            "h3": "88393375a1fffff",
+            "boardings": 182.1,
+            "expected": 179.2,
+            "ratio": 1.016
+          },
+          {
+            "h3": "883933752dfffff",
+            "boardings": 171.3,
+            "expected": 173.3,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839337527fffff",
+            "boardings": 170.2,
+            "expected": 172.2,
+            "ratio": 0.989
+          },
+          {
+            "h3": "88393360e1fffff",
+            "boardings": 161.5,
+            "expected": 165.7,
+            "ratio": 0.974
+          },
+          {
+            "h3": "883933759bfffff",
+            "boardings": 157.9,
+            "expected": 156.5,
+            "ratio": 1.009
+          },
+          {
+            "h3": "8839336759fffff",
+            "boardings": 154.6,
+            "expected": 158.3,
+            "ratio": 0.977
+          },
+          {
+            "h3": "88393362bdfffff",
+            "boardings": 148.6,
+            "expected": 152.8,
+            "ratio": 0.973
+          },
+          {
+            "h3": "88393375a9fffff",
+            "boardings": 146.8,
+            "expected": 145.7,
+            "ratio": 1.008
+          },
+          {
+            "h3": "883933753dfffff",
+            "boardings": 145.5,
+            "expected": 146.7,
+            "ratio": 0.992
+          },
+          {
+            "h3": "883933619bfffff",
+            "boardings": 144.1,
+            "expected": 144.1,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336e51fffff",
+            "boardings": 143.8,
+            "expected": 140.4,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393360ebfffff",
+            "boardings": 142.2,
+            "expected": 144.7,
+            "ratio": 0.983
+          },
+          {
+            "h3": "8839336253fffff",
+            "boardings": 139.4,
+            "expected": 141.1,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336521fffff",
+            "boardings": 138.1,
+            "expected": 136.7,
+            "ratio": 1.01
+          },
+          {
+            "h3": "88393375b7fffff",
+            "boardings": 136.4,
+            "expected": 139.7,
+            "ratio": 0.977
+          },
+          {
+            "h3": "8839336287fffff",
+            "boardings": 135.8,
+            "expected": 139.1,
+            "ratio": 0.976
+          },
+          {
+            "h3": "8839336041fffff",
+            "boardings": 131.7,
+            "expected": 133.2,
+            "ratio": 0.988
+          },
+          {
+            "h3": "88393364adfffff",
+            "boardings": 131.0,
+            "expected": 126.3,
+            "ratio": 1.038
+          },
+          {
+            "h3": "88393362a5fffff",
+            "boardings": 129.6,
+            "expected": 130.4,
+            "ratio": 0.994
+          },
+          {
+            "h3": "8839336741fffff",
+            "boardings": 123.4,
+            "expected": 120.4,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393360e7fffff",
+            "boardings": 120.0,
+            "expected": 123.2,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839337531fffff",
+            "boardings": 118.0,
+            "expected": 118.9,
+            "ratio": 0.993
+          },
+          {
+            "h3": "88393362abfffff",
+            "boardings": 117.3,
+            "expected": 121.0,
+            "ratio": 0.969
+          },
+          {
+            "h3": "8839336237fffff",
+            "boardings": 115.4,
+            "expected": 116.8,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336281fffff",
+            "boardings": 115.0,
+            "expected": 114.1,
+            "ratio": 1.007
+          },
+          {
+            "h3": "8839336e4dfffff",
+            "boardings": 114.1,
+            "expected": 114.1,
+            "ratio": 1.0
+          },
+          {
+            "h3": "88393375cdfffff",
+            "boardings": 113.9,
+            "expected": 111.8,
+            "ratio": 1.019
+          },
+          {
+            "h3": "8839336081fffff",
+            "boardings": 111.7,
+            "expected": 109.9,
+            "ratio": 1.017
+          },
+          {
+            "h3": "8839337517fffff",
+            "boardings": 108.0,
+            "expected": 105.9,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393360a7fffff",
+            "boardings": 107.5,
+            "expected": 107.5,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336219fffff",
+            "boardings": 106.7,
+            "expected": 108.0,
+            "ratio": 0.988
+          },
+          {
+            "h3": "883933621bfffff",
+            "boardings": 102.7,
+            "expected": 103.9,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839337599fffff",
+            "boardings": 102.0,
+            "expected": 101.1,
+            "ratio": 1.009
+          },
+          {
+            "h3": "8839337591fffff",
+            "boardings": 96.1,
+            "expected": 95.3,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393375b9fffff",
+            "boardings": 92.8,
+            "expected": 95.0,
+            "ratio": 0.977
+          },
+          {
+            "h3": "8839337595fffff",
+            "boardings": 92.4,
+            "expected": 94.3,
+            "ratio": 0.98
+          },
+          {
+            "h3": "883933676bfffff",
+            "boardings": 92.1,
+            "expected": 92.1,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336e5bfffff",
+            "boardings": 81.0,
+            "expected": 79.6,
+            "ratio": 1.018
+          },
+          {
+            "h3": "883933605bfffff",
+            "boardings": 76.9,
+            "expected": 74.7,
+            "ratio": 1.029
+          },
+          {
+            "h3": "8839336e55fffff",
+            "boardings": 69.2,
+            "expected": 67.5,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336059fffff",
+            "boardings": 67.6,
+            "expected": 67.4,
+            "ratio": 1.004
+          },
+          {
+            "h3": "88393375c5fffff",
+            "boardings": 66.5,
+            "expected": 65.3,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393360a9fffff",
+            "boardings": 63.9,
+            "expected": 65.6,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839336e5dfffff",
+            "boardings": 63.2,
+            "expected": 61.7,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393374a5fffff",
+            "boardings": 62.4,
+            "expected": 61.9,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393375e9fffff",
+            "boardings": 62.3,
+            "expected": 61.1,
+            "ratio": 1.019
+          },
+          {
+            "h3": "8839336e57fffff",
+            "boardings": 60.2,
+            "expected": 58.7,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393362adfffff",
+            "boardings": 58.4,
+            "expected": 58.2,
+            "ratio": 1.003
+          },
+          {
+            "h3": "8839336193fffff",
+            "boardings": 57.0,
+            "expected": 57.0,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839337593fffff",
+            "boardings": 56.9,
+            "expected": 56.3,
+            "ratio": 1.009
+          },
+          {
+            "h3": "8839336049fffff",
+            "boardings": 55.5,
+            "expected": 56.1,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336749fffff",
+            "boardings": 53.3,
+            "expected": 52.0,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393360a5fffff",
+            "boardings": 51.9,
+            "expected": 51.9,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336e53fffff",
+            "boardings": 50.4,
+            "expected": 49.2,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336235fffff",
+            "boardings": 49.9,
+            "expected": 50.5,
+            "ratio": 0.988
+          },
+          {
+            "h3": "88393375e1fffff",
+            "boardings": 49.7,
+            "expected": 49.4,
+            "ratio": 1.008
+          },
+          {
+            "h3": "8839336e59fffff",
+            "boardings": 48.9,
+            "expected": 47.8,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336085fffff",
+            "boardings": 48.3,
+            "expected": 49.6,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839337519fffff",
+            "boardings": 47.3,
+            "expected": 46.4,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393362cdfffff",
+            "boardings": 46.4,
+            "expected": 46.6,
+            "ratio": 0.994
+          },
+          {
+            "h3": "8839336507fffff",
+            "boardings": 45.0,
+            "expected": 44.6,
+            "ratio": 1.01
+          },
+          {
+            "h3": "883933752bfffff",
+            "boardings": 44.0,
+            "expected": 44.4,
+            "ratio": 0.991
+          },
+          {
+            "h3": "8839336747fffff",
+            "boardings": 40.7,
+            "expected": 39.7,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393374a7fffff",
+            "boardings": 39.0,
+            "expected": 38.6,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393375e3fffff",
+            "boardings": 38.4,
+            "expected": 38.1,
+            "ratio": 1.008
+          },
+          {
+            "h3": "883933664dfffff",
+            "boardings": 37.7,
+            "expected": 37.3,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393362c7fffff",
+            "boardings": 36.1,
+            "expected": 36.0,
+            "ratio": 1.001
+          },
+          {
+            "h3": "88393360e5fffff",
+            "boardings": 34.7,
+            "expected": 35.6,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839336e49fffff",
+            "boardings": 34.3,
+            "expected": 34.3,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839337529fffff",
+            "boardings": 31.6,
+            "expected": 31.9,
+            "ratio": 0.988
+          },
+          {
+            "h3": "88393360e9fffff",
+            "boardings": 30.9,
+            "expected": 31.7,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839336191fffff",
+            "boardings": 29.0,
+            "expected": 29.0,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839337515fffff",
+            "boardings": 28.8,
+            "expected": 28.3,
+            "ratio": 1.019
+          },
+          {
+            "h3": "8839336199fffff",
+            "boardings": 28.0,
+            "expected": 28.0,
+            "ratio": 1.0
+          },
+          {
+            "h3": "88393362a9fffff",
+            "boardings": 27.9,
+            "expected": 28.8,
+            "ratio": 0.969
+          },
+          {
+            "h3": "8839337427fffff",
+            "boardings": 27.8,
+            "expected": 27.2,
+            "ratio": 1.019
+          },
+          {
+            "h3": "883933625bfffff",
+            "boardings": 25.9,
+            "expected": 26.2,
+            "ratio": 0.988
+          },
+          {
+            "h3": "883933759dfffff",
+            "boardings": 25.1,
+            "expected": 24.8,
+            "ratio": 1.009
+          },
+          {
+            "h3": "883933751dfffff",
+            "boardings": 19.3,
+            "expected": 18.9,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393360edfffff",
+            "boardings": 17.8,
+            "expected": 18.3,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839337539fffff",
+            "boardings": 17.5,
+            "expected": 17.7,
+            "ratio": 0.992
+          },
+          {
+            "h3": "8839337425fffff",
+            "boardings": 17.4,
+            "expected": 17.1,
+            "ratio": 1.019
+          },
+          {
+            "h3": "8839336e45fffff",
+            "boardings": 17.3,
+            "expected": 17.3,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336257fffff",
+            "boardings": 17.0,
+            "expected": 17.2,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336523fffff",
+            "boardings": 16.4,
+            "expected": 16.2,
+            "ratio": 1.01
+          },
+          {
+            "h3": "88393375d3fffff",
+            "boardings": 15.4,
+            "expected": 15.3,
+            "ratio": 1.009
+          },
+          {
+            "h3": "883933670dfffff",
+            "boardings": 14.9,
+            "expected": 15.3,
+            "ratio": 0.972
+          },
+          {
+            "h3": "88393360a1fffff",
+            "boardings": 14.4,
+            "expected": 14.4,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336e41fffff",
+            "boardings": 13.9,
+            "expected": 13.9,
+            "ratio": 1.0
+          },
+          {
+            "h3": "88393360adfffff",
+            "boardings": 12.7,
+            "expected": 13.0,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839336e43fffff",
+            "boardings": 12.3,
+            "expected": 12.0,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393360a3fffff",
+            "boardings": 12.0,
+            "expected": 12.0,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839337567fffff",
+            "boardings": 11.8,
+            "expected": 12.0,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336211fffff",
+            "boardings": 11.6,
+            "expected": 11.7,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839337533fffff",
+            "boardings": 11.6,
+            "expected": 11.7,
+            "ratio": 0.992
+          },
+          {
+            "h3": "88393362c5fffff",
+            "boardings": 11.3,
+            "expected": 11.3,
+            "ratio": 1.001
+          },
+          {
+            "h3": "8839336e0bfffff",
+            "boardings": 10.8,
+            "expected": 10.5,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393375c1fffff",
+            "boardings": 10.7,
+            "expected": 10.5,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393375d7fffff",
+            "boardings": 10.2,
+            "expected": 10.1,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393361dbfffff",
+            "boardings": 9.6,
+            "expected": 9.9,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839337507fffff",
+            "boardings": 9.3,
+            "expected": 9.4,
+            "ratio": 0.992
+          },
+          {
+            "h3": "883933604dfffff",
+            "boardings": 9.2,
+            "expected": 9.3,
+            "ratio": 0.988
+          },
+          {
+            "h3": "8839336285fffff",
+            "boardings": 8.9,
+            "expected": 9.1,
+            "ratio": 0.977
+          },
+          {
+            "h3": "88393375edfffff",
+            "boardings": 8.7,
+            "expected": 8.6,
+            "ratio": 1.019
+          },
+          {
+            "h3": "8839336251fffff",
+            "boardings": 8.5,
+            "expected": 8.6,
+            "ratio": 0.988
+          },
+          {
+            "h3": "88393360b7fffff",
+            "boardings": 8.2,
+            "expected": 8.0,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336e19fffff",
+            "boardings": 8.1,
+            "expected": 7.9,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393375c9fffff",
+            "boardings": 6.8,
+            "expected": 6.7,
+            "ratio": 1.019
+          },
+          {
+            "h3": "88393374a1fffff",
+            "boardings": 5.7,
+            "expected": 5.7,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393360abfffff",
+            "boardings": 5.2,
+            "expected": 5.4,
+            "ratio": 0.974
+          },
+          {
+            "h3": "8839336e09fffff",
+            "boardings": 5.0,
+            "expected": 4.9,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336197fffff",
+            "boardings": 4.3,
+            "expected": 4.3,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336e4bfffff",
+            "boardings": 4.3,
+            "expected": 4.2,
+            "ratio": 1.024
+          },
+          {
+            "h3": "8839336649fffff",
+            "boardings": 3.8,
+            "expected": 3.7,
+            "ratio": 1.009
+          },
+          {
+            "h3": "88393361d3fffff",
+            "boardings": 3.8,
+            "expected": 3.8,
+            "ratio": 1.0
+          },
+          {
+            "h3": "8839336e1dfffff",
+            "boardings": 3.6,
+            "expected": 3.5,
+            "ratio": 1.024
+          },
+          {
+            "h3": "88393374adfffff",
+            "boardings": 3.5,
+            "expected": 3.5,
+            "ratio": 1.009
+          }
+        ]
+      }
+    },
+    "stops": {
+      "request": "GET /api/stops?day=2026-09-01&hour=8",
+      "status": 200,
+      "response": {
+        "date": "2026-09-01",
+        "hour": 8,
+        "stops": [
+          {
+            "stop_id": "marques",
+            "name": "Marquês de Pombal",
+            "lat": 38.7253,
+            "lon": -9.15,
+            "operators": [
+              "metro",
+              "carris"
+            ],
+            "boardings": 4308.2,
+            "expected": 4421.1,
+            "ratio": 0.974
+          },
+          {
+            "stop_id": "campogrande",
+            "name": "Campo Grande",
+            "lat": 38.7597,
+            "lon": -9.1583,
+            "operators": [
+              "metro",
+              "carris",
+              "cm"
+            ],
+            "boardings": 4030.7,
+            "expected": 4000.0,
+            "ratio": 1.008
+          },
+          {
+            "stop_id": "caisdosodre",
+            "name": "Cais do Sodré",
+            "lat": 38.7063,
+            "lon": -9.1446,
+            "operators": [
+              "metro",
+              "rail",
+              "ferry",
+              "carris"
+            ],
+            "boardings": 3903.3,
+            "expected": 3789.5,
+            "ratio": 1.03
+          },
+          {
+            "stop_id": "oriente",
+            "name": "Oriente",
+            "lat": 38.7678,
+            "lon": -9.0994,
+            "operators": [
+              "metro",
+              "rail",
+              "cm",
+              "carris"
+            ],
+            "boardings": 3494.9,
+            "expected": 3578.9,
+            "ratio": 0.977
+          },
+          {
+            "stop_id": "baixa",
+            "name": "Baixa-Chiado",
+            "lat": 38.7107,
+            "lon": -9.1395,
+            "operators": [
+              "metro",
+              "carris"
+            ],
+            "boardings": 3177.9,
+            "expected": 3157.9,
+            "ratio": 1.006
+          },
+          {
+            "stop_id": "alameda",
+            "name": "Alameda",
+            "lat": 38.7372,
+            "lon": -9.1336,
+            "operators": [
+              "metro",
+              "carris"
+            ],
+            "boardings": 2803.4,
+            "expected": 2736.8,
+            "ratio": 1.024
+          },
+          {
+            "stop_id": "entrecampos",
+            "name": "Entrecampos",
+            "lat": 38.748,
+            "lon": -9.1486,
+            "operators": [
+              "metro",
+              "rail",
+              "carris"
+            ],
+            "boardings": 2692.8,
+            "expected": 2631.6,
+            "ratio": 1.023
+          },
+          {
+            "stop_id": "saldanha",
+            "name": "Saldanha",
+            "lat": 38.735,
+            "lon": -9.145,
+            "operators": [
+              "metro",
+              "carris"
+            ],
+            "boardings": 2613.6,
+            "expected": 2526.3,
+            "ratio": 1.035
+          },
+          {
+            "stop_id": "seterios",
+            "name": "Sete Rios",
+            "lat": 38.7418,
+            "lon": -9.1686,
+            "operators": [
+              "metro",
+              "rail",
+              "cm",
+              "carris"
+            ],
+            "boardings": 2462.8,
+            "expected": 2421.1,
+            "ratio": 1.017
+          },
+          {
+            "stop_id": "terreiro",
+            "name": "Terreiro do Paço",
+            "lat": 38.7075,
+            "lon": -9.1335,
+            "operators": [
+              "metro",
+              "ferry",
+              "carris"
+            ],
+            "boardings": 1471.2,
+            "expected": 1473.7,
+            "ratio": 0.998
+          },
+          {
+            "stop_id": "colegiomilitar",
+            "name": "Colégio Militar",
+            "lat": 38.753,
+            "lon": -9.1886,
+            "operators": [
+              "metro",
+              "cm",
+              "carris"
+            ],
+            "boardings": 1580.1,
+            "expected": 1578.9,
+            "ratio": 1.001
+          },
+          {
+            "stop_id": "reboleira",
+            "name": "Reboleira",
+            "lat": 38.758,
+            "lon": -9.223,
+            "operators": [
+              "metro",
+              "rail",
+              "cm"
+            ],
+            "boardings": 1352.0,
+            "expected": 1368.4,
+            "ratio": 0.988
+          },
+          {
+            "stop_id": "pontinha",
+            "name": "Pontinha",
+            "lat": 38.7625,
+            "lon": -9.197,
+            "operators": [
+              "metro",
+              "cm"
+            ],
+            "boardings": 1252.5,
+            "expected": 1263.2,
+            "ratio": 0.992
+          },
+          {
+            "stop_id": "odivelas",
+            "name": "Odivelas",
+            "lat": 38.793,
+            "lon": -9.173,
+            "operators": [
+              "metro",
+              "cm"
+            ],
+            "boardings": 1180.3,
+            "expected": 1157.9,
+            "ratio": 1.019
+          },
+          {
+            "stop_id": "santaapolonia",
+            "name": "Santa Apolónia",
+            "lat": 38.7137,
+            "lon": -9.1227,
+            "operators": [
+              "metro",
+              "rail",
+              "carris"
+            ],
+            "boardings": 920.5,
+            "expected": 947.4,
+            "ratio": 0.972
+          },
+          {
+            "stop_id": "alcantara",
+            "name": "Alcântara",
+            "lat": 38.705,
+            "lon": -9.176,
+            "operators": [
+              "rail",
+              "carris"
+            ],
+            "boardings": 917.6,
+            "expected": 947.4,
+            "ratio": 0.969
+          },
+          {
+            "stop_id": "alges",
+            "name": "Algés",
+            "lat": 38.701,
+            "lon": -9.229,
+            "operators": [
+              "rail",
+              "carris",
+              "cm"
+            ],
+            "boardings": 1040.1,
+            "expected": 1052.6,
+            "ratio": 0.988
+          },
+          {
+            "stop_id": "belem",
+            "name": "Belém",
+            "lat": 38.697,
+            "lon": -9.206,
+            "operators": [
+              "rail",
+              "carris"
+            ],
+            "boardings": 866.1,
+            "expected": 842.1,
+            "ratio": 1.029
+          },
+          {
+            "stop_id": "amoreiras",
+            "name": "Amoreiras",
+            "lat": 38.724,
+            "lon": -9.162,
+            "operators": [
+              "carris"
+            ],
+            "boardings": 719.6,
+            "expected": 736.8,
+            "ratio": 0.977
+          },
+          {
+            "stop_id": "sacavem",
+            "name": "Sacavém",
+            "lat": 38.793,
+            "lon": -9.101,
+            "operators": [
+              "rail",
+              "cm"
+            ],
+            "boardings": 637.3,
+            "expected": 631.6,
+            "ratio": 1.009
+          },
+          {
+            "stop_id": "cacilhas",
+            "name": "Cacilhas",
+            "lat": 38.688,
+            "lon": -9.148,
+            "operators": [
+              "ferry",
+              "cm",
+              "other"
+            ],
+            "boardings": 1716.5,
+            "expected": 1684.2,
+            "ratio": 1.019
+          },
+          {
+            "stop_id": "pragal",
+            "name": "Pragal",
+            "lat": 38.668,
+            "lon": -9.163,
+            "operators": [
+              "rail",
+              "cm",
+              "other"
+            ],
+            "boardings": 922.9,
+            "expected": 947.4,
+            "ratio": 0.974
+          },
+          {
+            "stop_id": "corroios",
+            "name": "Corroios",
+            "lat": 38.638,
+            "lon": -9.147,
+            "operators": [
+              "rail",
+              "other"
+            ],
+            "boardings": 631.6,
+            "expected": 631.6,
+            "ratio": 1.0
+          },
+          {
+            "stop_id": "seixal",
+            "name": "Seixal",
+            "lat": 38.64,
+            "lon": -9.102,
+            "operators": [
+              "ferry",
+              "cm"
+            ],
+            "boardings": 539.1,
+            "expected": 526.3,
+            "ratio": 1.024
+          },
+          {
+            "stop_id": "barreiro",
+            "name": "Barreiro",
+            "lat": 38.657,
+            "lon": -9.079,
+            "operators": [
+              "ferry",
+              "rail",
+              "other"
+            ],
+            "boardings": 1275.9,
+            "expected": 1263.2,
+            "ratio": 1.01
+          },
+          {
+            "stop_id": "montijo",
+            "name": "Montijo",
+            "lat": 38.705,
+            "lon": -8.973,
+            "operators": [
+              "ferry",
+              "cm"
+            ],
+            "boardings": 436.8,
+            "expected": 421.1,
+            "ratio": 1.038
+          }
+        ]
+      }
+    },
+    "stop_detail": {
+      "request": "GET /api/stops/oriente?day=2026-09-01&hour=18",
+      "status": 200,
+      "response": {
+        "stop_id": "oriente",
+        "name": "Oriente",
+        "lat": 38.7678,
+        "lon": -9.0994,
+        "operators": [
+          "metro",
+          "rail",
+          "cm",
+          "carris"
+        ],
+        "operator_stop_ids": {
+          "metro": [
+            "mock-metro-oriente"
+          ],
+          "rail": [
+            "mock-rail-oriente"
+          ],
+          "cm": [
+            "mock-cm-oriente"
+          ],
+          "carris": [
+            "mock-carris-oriente"
+          ]
+        },
+        "date": "2026-09-01",
+        "hour": 18,
+        "now": {
+          "boardings": 7749.8,
+          "expected": 3090.9,
+          "deviation_pct": 150.7
+        },
+        "hourly": [
+          {
+            "hour": 5,
+            "boardings": 325.2,
+            "expected": 325.4
+          },
+          {
+            "hour": 6,
+            "boardings": 1164.1,
+            "expected": 1138.8
+          },
+          {
+            "hour": 7,
+            "boardings": 2658.4,
+            "expected": 2765.6
+          },
+          {
+            "hour": 8,
+            "boardings": 3494.9,
+            "expected": 3578.9
+          },
+          {
+            "hour": 9,
+            "boardings": 2591.3,
+            "expected": 2602.9
+          },
+          {
+            "hour": 10,
+            "boardings": 1673.1,
+            "expected": 1626.8
+          },
+          {
+            "hour": 11,
+            "boardings": 1477.9,
+            "expected": 1464.1
+          },
+          {
+            "hour": 12,
+            "boardings": 1546.7,
+            "expected": 1561.7
+          },
+          {
+            "hour": 13,
+            "boardings": 1580.1,
+            "expected": 1626.8
+          },
+          {
+            "hour": 14,
+            "boardings": 1600.2,
+            "expected": 1561.7
+          },
+          {
+            "hour": 15,
+            "boardings": 1701.3,
+            "expected": 1691.9
+          },
+          {
+            "hour": 16,
+            "boardings": 1990.1,
+            "expected": 2017.2
+          },
+          {
+            "hour": 17,
+            "boardings": 2675.7,
+            "expected": 2765.6
+          },
+          {
+            "hour": 18,
+            "boardings": 7749.8,
+            "expected": 3090.9
+          },
+          {
+            "hour": 19,
+            "boardings": 2316.3,
+            "expected": 2277.5
+          },
+          {
+            "hour": 20,
+            "boardings": 1431.5,
+            "expected": 1464.1
+          },
+          {
+            "hour": 21,
+            "boardings": 972.9,
+            "expected": 976.1
+          },
+          {
+            "hour": 22,
+            "boardings": 729.8,
+            "expected": 715.8
+          },
+          {
+            "hour": 23,
+            "boardings": 506.9,
+            "expected": 488.0
+          },
+          {
+            "hour": 24,
+            "boardings": 253.5,
+            "expected": 260.3
+          }
+        ],
+        "week_grid": [
+          {
+            "date": "2026-08-31",
+            "weekday": "Mon",
+            "hourly": [
+              319.9,
+              1053.7,
+              2609.1,
+              3441.3,
+              2549.8,
+              1595.8,
+              1409.7,
+              1469.8,
+              1501.6,
+              1537.6,
+              1635.1,
+              1905.8,
+              2562.7,
+              3009.6,
+              2176.4,
+              1404.9,
+              954.3,
+              658.4,
+              457.7,
+              248.8
+            ]
+          },
+          {
+            "date": "2026-09-01",
+            "weekday": "Tue",
+            "hourly": [
+              325.2,
+              1164.1,
+              2658.4,
+              3494.9,
+              2591.3,
+              1673.1,
+              1477.9,
+              1546.7,
+              1580.1,
+              1600.2,
+              1701.3,
+              1990.1,
+              2675.7,
+              7749.8,
+              2316.3,
+              1431.5,
+              972.9,
+              729.8,
+              506.9,
+              253.5
+            ]
+          },
+          {
+            "date": "2026-09-02",
+            "weekday": "Wed",
+            "hourly": [
+              337.4,
+              1154.9,
+              2752.2,
+              3479.8,
+              2689.4,
+              1647.2,
+              1510.4,
+              1521.8,
+              1616.2,
+              1575.4,
+              1738.9,
+              1958.0,
+              2737.0,
+              3106.1,
+              2332.1,
+              1500.9,
+              982.0,
+              706.5,
+              472.4,
+              265.8
+            ]
+          },
+          {
+            "date": "2026-09-03",
+            "weekday": "Thu",
+            "hourly": [
+              329.5,
+              1174.8,
+              2684.5,
+              3542.2,
+              2625.7,
+              1605.2,
+              1416.8,
+              1600.5,
+              1636.2,
+              1547.0,
+              1643.6,
+              2075.0,
+              2792.1,
+              3026.4,
+              2186.6,
+              1411.8,
+              959.8,
+              717.5,
+              498.5,
+              250.0
+            ]
+          },
+          {
+            "date": "2026-09-04",
+            "weekday": "Fri",
+            "hourly": [
+              324.3,
+              1113.9,
+              2654.0,
+              3368.5,
+              2603.7,
+              1547.7,
+              1420.0,
+              1543.5,
+              1637.9,
+              1491.6,
+              1647.1,
+              2001.1,
+              2580.0,
+              2963.5,
+              2225.7,
+              1424.8,
+              931.9,
+              667.5,
+              484.0,
+              252.3
+            ]
+          },
+          {
+            "date": "2026-09-05",
+            "weekday": "Sat",
+            "hourly": [
+              156.0,
+              399.0,
+              711.4,
+              1002.5,
+              1225.4,
+              1399.1,
+              1470.9,
+              1500.5,
+              1594.0,
+              1504.6,
+              1476.5,
+              1448.4,
+              1420.3,
+              1388.6,
+              1167.7,
+              898.4,
+              711.8,
+              480.4,
+              352.6,
+              200.4
+            ]
+          },
+          {
+            "date": "2026-09-06",
+            "weekday": "Sun",
+            "hourly": [
+              114.0,
+              301.8,
+              518.2,
+              717.9,
+              915.4,
+              998.0,
+              1090.3,
+              1160.3,
+              1182.2,
+              1073.5,
+              1094.6,
+              1119.8,
+              1140.9,
+              1005.8,
+              879.0,
+              681.1,
+              519.9,
+              364.3,
+              257.3,
+              151.9
+            ]
+          }
+        ],
+        "mix": {
+          "regular": 0.6736,
+          "sub23": 0.1468,
+          "senior": 0.1796
+        },
+        "facilities": {
+          "shelter": true,
+          "step_free": true,
+          "realtime_display": true,
+          "wheelchair_boarding": true
+        },
+        "transfers_here": {
+          "transfers": 6300,
+          "worst_median_wait_min": 13
+        }
+      }
+    },
+    "line_profile_bus": {
+      "request": "GET /api/lines/1709/profile?day=2026-09-01",
+      "status": 200,
+      "response": {
+        "line_id": "1709",
+        "label": "1709",
+        "name": "Amadora Este ↔ Colégio Militar",
+        "mode": "bus",
+        "operator": "cm",
+        "vehicle": {
+          "seats": 37,
+          "standing": 52,
+          "places": 89,
+          "source": "blocks.txt"
+        },
+        "shape": [
+          [
+            -9.223,
+            38.758
+          ],
+          [
+            -9.2115,
+            38.7565
+          ],
+          [
+            -9.2,
+            38.7545
+          ],
+          [
+            -9.1886,
+            38.753
+          ]
+        ],
+        "date": "2026-09-01",
+        "hours": [
+          {
+            "hour": 5,
+            "boardings": 93.8,
+            "est_peak_load": 33.8,
+            "trips": 2,
+            "places_offered": 178,
+            "load_factor": 0.19
+          },
+          {
+            "hour": 6,
+            "boardings": 328.2,
+            "est_peak_load": 118.2,
+            "trips": 3,
+            "places_offered": 267,
+            "load_factor": 0.443
+          },
+          {
+            "hour": 7,
+            "boardings": 797.1,
+            "est_peak_load": 287.0,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.806
+          },
+          {
+            "hour": 8,
+            "boardings": 1031.6,
+            "est_peak_load": 371.4,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 1.043
+          },
+          {
+            "hour": 9,
+            "boardings": 750.2,
+            "est_peak_load": 270.1,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.759
+          },
+          {
+            "hour": 10,
+            "boardings": 468.9,
+            "est_peak_load": 168.8,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.474
+          },
+          {
+            "hour": 11,
+            "boardings": 422.0,
+            "est_peak_load": 151.9,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.427
+          },
+          {
+            "hour": 12,
+            "boardings": 450.1,
+            "est_peak_load": 162.1,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.455
+          },
+          {
+            "hour": 13,
+            "boardings": 468.9,
+            "est_peak_load": 168.8,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.474
+          },
+          {
+            "hour": 14,
+            "boardings": 450.1,
+            "est_peak_load": 162.1,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.455
+          },
+          {
+            "hour": 15,
+            "boardings": 487.7,
+            "est_peak_load": 175.6,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.493
+          },
+          {
+            "hour": 16,
+            "boardings": 581.4,
+            "est_peak_load": 209.3,
+            "trips": 3,
+            "places_offered": 267,
+            "load_factor": 0.784
+          },
+          {
+            "hour": 17,
+            "boardings": 797.1,
+            "est_peak_load": 287.0,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.806
+          },
+          {
+            "hour": 18,
+            "boardings": 890.9,
+            "est_peak_load": 320.7,
+            "trips": 4,
+            "places_offered": 356,
+            "load_factor": 0.901
+          },
+          {
+            "hour": 19,
+            "boardings": 656.5,
+            "est_peak_load": 236.3,
+            "trips": 3,
+            "places_offered": 267,
+            "load_factor": 0.885
+          },
+          {
+            "hour": 20,
+            "boardings": 422.0,
+            "est_peak_load": 151.9,
+            "trips": 3,
+            "places_offered": 267,
+            "load_factor": 0.569
+          },
+          {
+            "hour": 21,
+            "boardings": 281.3,
+            "est_peak_load": 101.3,
+            "trips": 2,
+            "places_offered": 178,
+            "load_factor": 0.569
+          },
+          {
+            "hour": 22,
+            "boardings": 206.3,
+            "est_peak_load": 74.3,
+            "trips": 2,
+            "places_offered": 178,
+            "load_factor": 0.417
+          },
+          {
+            "hour": 23,
+            "boardings": 140.7,
+            "est_peak_load": 50.6,
+            "trips": 2,
+            "places_offered": 178,
+            "load_factor": 0.285
+          },
+          {
+            "hour": 24,
+            "boardings": 75.0,
+            "est_peak_load": 27.0,
+            "trips": 1,
+            "places_offered": 89,
+            "load_factor": 0.303
+          }
+        ],
+        "peak": {
+          "hour": 8,
+          "load_factor": 1.043
+        },
+        "whatif": {
+          "move_to_hours": [
+            8,
+            8,
+            7,
+            18
+          ],
+          "move_from_hours": [
+            12,
+            13,
+            11,
+            14
+          ],
+          "note": "Computed in the browser: for N moved trips, trips[to[i]] += 1 and trips[from[i]] -= 1 for i < N; places_offered = trips × vehicle.places; load_factor = est_peak_load / places_offered."
+        }
+      }
+    },
+    "line_profile_ferry": {
+      "request": "GET /api/lines/CA-CS/profile?day=2026-09-01",
+      "status": 200,
+      "response": {
+        "line_id": "CA-CS",
+        "label": "Cacilhas–Cais do Sodré",
+        "name": "Ferry Cacilhas → Cais do Sodré",
+        "mode": "ferry",
+        "operator": "ferry",
+        "vehicle": {
+          "seats": 590,
+          "standing": 0,
+          "places": 590,
+          "source": "Transtejo fleet"
+        },
+        "shape": [
+          [
+            -9.148,
+            38.688
+          ],
+          [
+            -9.1465,
+            38.6975
+          ],
+          [
+            -9.1446,
+            38.7063
+          ]
+        ],
+        "date": "2026-09-01",
+        "hours": [
+          {
+            "hour": 5,
+            "boardings": 124.4,
+            "est_peak_load": 124.4,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.105
+          },
+          {
+            "hour": 6,
+            "boardings": 435.4,
+            "est_peak_load": 435.4,
+            "trips": 3,
+            "places_offered": 1770,
+            "load_factor": 0.246
+          },
+          {
+            "hour": 7,
+            "boardings": 1057.4,
+            "est_peak_load": 1057.4,
+            "trips": 4,
+            "places_offered": 2360,
+            "load_factor": 0.448
+          },
+          {
+            "hour": 8,
+            "boardings": 1368.4,
+            "est_peak_load": 1368.4,
+            "trips": 4,
+            "places_offered": 2360,
+            "load_factor": 0.58
+          },
+          {
+            "hour": 9,
+            "boardings": 995.2,
+            "est_peak_load": 995.2,
+            "trips": 3,
+            "places_offered": 1770,
+            "load_factor": 0.562
+          },
+          {
+            "hour": 10,
+            "boardings": 622.0,
+            "est_peak_load": 622.0,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.527
+          },
+          {
+            "hour": 11,
+            "boardings": 559.8,
+            "est_peak_load": 559.8,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.474
+          },
+          {
+            "hour": 12,
+            "boardings": 597.1,
+            "est_peak_load": 597.1,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.506
+          },
+          {
+            "hour": 13,
+            "boardings": 622.0,
+            "est_peak_load": 622.0,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.527
+          },
+          {
+            "hour": 14,
+            "boardings": 597.1,
+            "est_peak_load": 597.1,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.506
+          },
+          {
+            "hour": 15,
+            "boardings": 646.9,
+            "est_peak_load": 646.9,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.548
+          },
+          {
+            "hour": 16,
+            "boardings": 771.3,
+            "est_peak_load": 771.3,
+            "trips": 3,
+            "places_offered": 1770,
+            "load_factor": 0.436
+          },
+          {
+            "hour": 17,
+            "boardings": 1057.4,
+            "est_peak_load": 1057.4,
+            "trips": 4,
+            "places_offered": 2360,
+            "load_factor": 0.448
+          },
+          {
+            "hour": 18,
+            "boardings": 1181.8,
+            "est_peak_load": 1181.8,
+            "trips": 4,
+            "places_offered": 2360,
+            "load_factor": 0.501
+          },
+          {
+            "hour": 19,
+            "boardings": 870.8,
+            "est_peak_load": 870.8,
+            "trips": 3,
+            "places_offered": 1770,
+            "load_factor": 0.492
+          },
+          {
+            "hour": 20,
+            "boardings": 559.8,
+            "est_peak_load": 559.8,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.474
+          },
+          {
+            "hour": 21,
+            "boardings": 373.2,
+            "est_peak_load": 373.2,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.316
+          },
+          {
+            "hour": 22,
+            "boardings": 273.7,
+            "est_peak_load": 273.7,
+            "trips": 2,
+            "places_offered": 1180,
+            "load_factor": 0.232
+          },
+          {
+            "hour": 23,
+            "boardings": 186.6,
+            "est_peak_load": 186.6,
+            "trips": 1,
+            "places_offered": 590,
+            "load_factor": 0.316
+          },
+          {
+            "hour": 24,
+            "boardings": 99.5,
+            "est_peak_load": 99.5,
+            "trips": 1,
+            "places_offered": 590,
+            "load_factor": 0.169
+          }
+        ],
+        "peak": {
+          "hour": 8,
+          "load_factor": 0.58
+        },
+        "whatif": {
+          "move_to_hours": [
+            8,
+            8,
+            7,
+            18
+          ],
+          "move_from_hours": [
+            12,
+            13,
+            11,
+            14
+          ],
+          "note": "Computed in the browser: for N moved trips, trips[to[i]] += 1 and trips[from[i]] -= 1 for i < N; places_offered = trips × vehicle.places; load_factor = est_peak_load / places_offered."
+        }
+      }
+    },
+    "transfers": {
+      "request": "GET /api/transfers?day=2026-09-01",
+      "status": 200,
+      "response": {
+        "date": "2026-09-01",
+        "interchanges": [
+          {
+            "stop_id": "campogrande",
+            "name": "Campo Grande",
+            "lat": 38.7597,
+            "lon": -9.1583,
+            "transfers": 7800,
+            "worst_median_wait_min": 12,
+            "fragile": true,
+            "pairs": [
+              {
+                "from_operator": "cm",
+                "to_operator": "metro",
+                "transfers": 4200,
+                "median_wait_min": 5,
+                "p90_wait_min": 10
+              },
+              {
+                "from_operator": "carris",
+                "to_operator": "metro",
+                "transfers": 1900,
+                "median_wait_min": 6,
+                "p90_wait_min": 12
+              },
+              {
+                "from_operator": "metro",
+                "to_operator": "cm",
+                "transfers": 1700,
+                "median_wait_min": 12,
+                "p90_wait_min": 22
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 74.6
+              },
+              {
+                "hour": 6,
+                "transfers": 261.2
+              },
+              {
+                "hour": 7,
+                "transfers": 634.4
+              },
+              {
+                "hour": 8,
+                "transfers": 821.1
+              },
+              {
+                "hour": 9,
+                "transfers": 597.1
+              },
+              {
+                "hour": 10,
+                "transfers": 373.2
+              },
+              {
+                "hour": 11,
+                "transfers": 335.9
+              },
+              {
+                "hour": 12,
+                "transfers": 358.3
+              },
+              {
+                "hour": 13,
+                "transfers": 373.2
+              },
+              {
+                "hour": 14,
+                "transfers": 358.3
+              },
+              {
+                "hour": 15,
+                "transfers": 388.1
+              },
+              {
+                "hour": 16,
+                "transfers": 462.8
+              },
+              {
+                "hour": 17,
+                "transfers": 634.4
+              },
+              {
+                "hour": 18,
+                "transfers": 709.1
+              },
+              {
+                "hour": 19,
+                "transfers": 522.5
+              },
+              {
+                "hour": 20,
+                "transfers": 335.9
+              },
+              {
+                "hour": 21,
+                "transfers": 223.9
+              },
+              {
+                "hour": 22,
+                "transfers": 164.2
+              },
+              {
+                "hour": 23,
+                "transfers": 112.0
+              },
+              {
+                "hour": 24,
+                "transfers": 59.7
+              }
+            ]
+          },
+          {
+            "stop_id": "caisdosodre",
+            "name": "Cais do Sodré",
+            "lat": 38.7063,
+            "lon": -9.1446,
+            "transfers": 7750,
+            "worst_median_wait_min": 11,
+            "fragile": true,
+            "pairs": [
+              {
+                "from_operator": "ferry",
+                "to_operator": "metro",
+                "transfers": 3900,
+                "median_wait_min": 4,
+                "p90_wait_min": 9
+              },
+              {
+                "from_operator": "rail",
+                "to_operator": "metro",
+                "transfers": 2700,
+                "median_wait_min": 5,
+                "p90_wait_min": 10
+              },
+              {
+                "from_operator": "ferry",
+                "to_operator": "carris",
+                "transfers": 1150,
+                "median_wait_min": 11,
+                "p90_wait_min": 19
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 74.2
+              },
+              {
+                "hour": 6,
+                "transfers": 259.6
+              },
+              {
+                "hour": 7,
+                "transfers": 630.4
+              },
+              {
+                "hour": 8,
+                "transfers": 815.8
+              },
+              {
+                "hour": 9,
+                "transfers": 593.3
+              },
+              {
+                "hour": 10,
+                "transfers": 370.8
+              },
+              {
+                "hour": 11,
+                "transfers": 333.7
+              },
+              {
+                "hour": 12,
+                "transfers": 356.0
+              },
+              {
+                "hour": 13,
+                "transfers": 370.8
+              },
+              {
+                "hour": 14,
+                "transfers": 356.0
+              },
+              {
+                "hour": 15,
+                "transfers": 385.6
+              },
+              {
+                "hour": 16,
+                "transfers": 459.8
+              },
+              {
+                "hour": 17,
+                "transfers": 630.4
+              },
+              {
+                "hour": 18,
+                "transfers": 704.5
+              },
+              {
+                "hour": 19,
+                "transfers": 519.1
+              },
+              {
+                "hour": 20,
+                "transfers": 333.7
+              },
+              {
+                "hour": 21,
+                "transfers": 222.5
+              },
+              {
+                "hour": 22,
+                "transfers": 163.2
+              },
+              {
+                "hour": 23,
+                "transfers": 111.2
+              },
+              {
+                "hour": 24,
+                "transfers": 59.3
+              }
+            ]
+          },
+          {
+            "stop_id": "marques",
+            "name": "Marquês de Pombal",
+            "lat": 38.7253,
+            "lon": -9.15,
+            "transfers": 6300,
+            "worst_median_wait_min": 9,
+            "fragile": false,
+            "pairs": [
+              {
+                "from_operator": "carris",
+                "to_operator": "metro",
+                "transfers": 3100,
+                "median_wait_min": 6,
+                "p90_wait_min": 11
+              },
+              {
+                "from_operator": "metro",
+                "to_operator": "carris",
+                "transfers": 2400,
+                "median_wait_min": 7,
+                "p90_wait_min": 14
+              },
+              {
+                "from_operator": "cm",
+                "to_operator": "metro",
+                "transfers": 800,
+                "median_wait_min": 9,
+                "p90_wait_min": 16
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 60.3
+              },
+              {
+                "hour": 6,
+                "transfers": 211.0
+              },
+              {
+                "hour": 7,
+                "transfers": 512.4
+              },
+              {
+                "hour": 8,
+                "transfers": 663.2
+              },
+              {
+                "hour": 9,
+                "transfers": 482.3
+              },
+              {
+                "hour": 10,
+                "transfers": 301.4
+              },
+              {
+                "hour": 11,
+                "transfers": 271.3
+              },
+              {
+                "hour": 12,
+                "transfers": 289.4
+              },
+              {
+                "hour": 13,
+                "transfers": 301.4
+              },
+              {
+                "hour": 14,
+                "transfers": 289.4
+              },
+              {
+                "hour": 15,
+                "transfers": 313.5
+              },
+              {
+                "hour": 16,
+                "transfers": 373.8
+              },
+              {
+                "hour": 17,
+                "transfers": 512.4
+              },
+              {
+                "hour": 18,
+                "transfers": 572.7
+              },
+              {
+                "hour": 19,
+                "transfers": 422.0
+              },
+              {
+                "hour": 20,
+                "transfers": 271.3
+              },
+              {
+                "hour": 21,
+                "transfers": 180.9
+              },
+              {
+                "hour": 22,
+                "transfers": 132.6
+              },
+              {
+                "hour": 23,
+                "transfers": 90.4
+              },
+              {
+                "hour": 24,
+                "transfers": 48.2
+              }
+            ]
+          },
+          {
+            "stop_id": "oriente",
+            "name": "Oriente",
+            "lat": 38.7678,
+            "lon": -9.0994,
+            "transfers": 6300,
+            "worst_median_wait_min": 13,
+            "fragile": true,
+            "pairs": [
+              {
+                "from_operator": "rail",
+                "to_operator": "metro",
+                "transfers": 2600,
+                "median_wait_min": 4,
+                "p90_wait_min": 8
+              },
+              {
+                "from_operator": "cm",
+                "to_operator": "metro",
+                "transfers": 2300,
+                "median_wait_min": 8,
+                "p90_wait_min": 15
+              },
+              {
+                "from_operator": "metro",
+                "to_operator": "cm",
+                "transfers": 1400,
+                "median_wait_min": 13,
+                "p90_wait_min": 24
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 60.3
+              },
+              {
+                "hour": 6,
+                "transfers": 211.0
+              },
+              {
+                "hour": 7,
+                "transfers": 512.4
+              },
+              {
+                "hour": 8,
+                "transfers": 663.2
+              },
+              {
+                "hour": 9,
+                "transfers": 482.3
+              },
+              {
+                "hour": 10,
+                "transfers": 301.4
+              },
+              {
+                "hour": 11,
+                "transfers": 271.3
+              },
+              {
+                "hour": 12,
+                "transfers": 289.4
+              },
+              {
+                "hour": 13,
+                "transfers": 301.4
+              },
+              {
+                "hour": 14,
+                "transfers": 289.4
+              },
+              {
+                "hour": 15,
+                "transfers": 313.5
+              },
+              {
+                "hour": 16,
+                "transfers": 373.8
+              },
+              {
+                "hour": 17,
+                "transfers": 512.4
+              },
+              {
+                "hour": 18,
+                "transfers": 572.7
+              },
+              {
+                "hour": 19,
+                "transfers": 422.0
+              },
+              {
+                "hour": 20,
+                "transfers": 271.3
+              },
+              {
+                "hour": 21,
+                "transfers": 180.9
+              },
+              {
+                "hour": 22,
+                "transfers": 132.6
+              },
+              {
+                "hour": 23,
+                "transfers": 90.4
+              },
+              {
+                "hour": 24,
+                "transfers": 48.2
+              }
+            ]
+          },
+          {
+            "stop_id": "cacilhas",
+            "name": "Cacilhas",
+            "lat": 38.688,
+            "lon": -9.148,
+            "transfers": 4200,
+            "worst_median_wait_min": 9,
+            "fragile": false,
+            "pairs": [
+              {
+                "from_operator": "cm",
+                "to_operator": "ferry",
+                "transfers": 3300,
+                "median_wait_min": 6,
+                "p90_wait_min": 12
+              },
+              {
+                "from_operator": "other",
+                "to_operator": "ferry",
+                "transfers": 900,
+                "median_wait_min": 9,
+                "p90_wait_min": 17
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 40.2
+              },
+              {
+                "hour": 6,
+                "transfers": 140.7
+              },
+              {
+                "hour": 7,
+                "transfers": 341.6
+              },
+              {
+                "hour": 8,
+                "transfers": 442.1
+              },
+              {
+                "hour": 9,
+                "transfers": 321.5
+              },
+              {
+                "hour": 10,
+                "transfers": 201.0
+              },
+              {
+                "hour": 11,
+                "transfers": 180.9
+              },
+              {
+                "hour": 12,
+                "transfers": 192.9
+              },
+              {
+                "hour": 13,
+                "transfers": 201.0
+              },
+              {
+                "hour": 14,
+                "transfers": 192.9
+              },
+              {
+                "hour": 15,
+                "transfers": 209.0
+              },
+              {
+                "hour": 16,
+                "transfers": 249.2
+              },
+              {
+                "hour": 17,
+                "transfers": 341.6
+              },
+              {
+                "hour": 18,
+                "transfers": 381.8
+              },
+              {
+                "hour": 19,
+                "transfers": 281.3
+              },
+              {
+                "hour": 20,
+                "transfers": 180.9
+              },
+              {
+                "hour": 21,
+                "transfers": 120.6
+              },
+              {
+                "hour": 22,
+                "transfers": 88.4
+              },
+              {
+                "hour": 23,
+                "transfers": 60.3
+              },
+              {
+                "hour": 24,
+                "transfers": 32.2
+              }
+            ]
+          },
+          {
+            "stop_id": "seterios",
+            "name": "Sete Rios",
+            "lat": 38.7418,
+            "lon": -9.1686,
+            "transfers": 3400,
+            "worst_median_wait_min": 7,
+            "fragile": false,
+            "pairs": [
+              {
+                "from_operator": "rail",
+                "to_operator": "metro",
+                "transfers": 2100,
+                "median_wait_min": 5,
+                "p90_wait_min": 9
+              },
+              {
+                "from_operator": "cm",
+                "to_operator": "metro",
+                "transfers": 1300,
+                "median_wait_min": 7,
+                "p90_wait_min": 13
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 32.5
+              },
+              {
+                "hour": 6,
+                "transfers": 113.9
+              },
+              {
+                "hour": 7,
+                "transfers": 276.6
+              },
+              {
+                "hour": 8,
+                "transfers": 357.9
+              },
+              {
+                "hour": 9,
+                "transfers": 260.3
+              },
+              {
+                "hour": 10,
+                "transfers": 162.7
+              },
+              {
+                "hour": 11,
+                "transfers": 146.4
+              },
+              {
+                "hour": 12,
+                "transfers": 156.2
+              },
+              {
+                "hour": 13,
+                "transfers": 162.7
+              },
+              {
+                "hour": 14,
+                "transfers": 156.2
+              },
+              {
+                "hour": 15,
+                "transfers": 169.2
+              },
+              {
+                "hour": 16,
+                "transfers": 201.7
+              },
+              {
+                "hour": 17,
+                "transfers": 276.6
+              },
+              {
+                "hour": 18,
+                "transfers": 309.1
+              },
+              {
+                "hour": 19,
+                "transfers": 227.8
+              },
+              {
+                "hour": 20,
+                "transfers": 146.4
+              },
+              {
+                "hour": 21,
+                "transfers": 97.6
+              },
+              {
+                "hour": 22,
+                "transfers": 71.6
+              },
+              {
+                "hour": 23,
+                "transfers": 48.8
+              },
+              {
+                "hour": 24,
+                "transfers": 26.0
+              }
+            ]
+          },
+          {
+            "stop_id": "barreiro",
+            "name": "Barreiro",
+            "lat": 38.657,
+            "lon": -9.079,
+            "transfers": 3200,
+            "worst_median_wait_min": 10,
+            "fragile": true,
+            "pairs": [
+              {
+                "from_operator": "rail",
+                "to_operator": "ferry",
+                "transfers": 2400,
+                "median_wait_min": 3,
+                "p90_wait_min": 7
+              },
+              {
+                "from_operator": "other",
+                "to_operator": "ferry",
+                "transfers": 800,
+                "median_wait_min": 10,
+                "p90_wait_min": 18
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 30.6
+              },
+              {
+                "hour": 6,
+                "transfers": 107.2
+              },
+              {
+                "hour": 7,
+                "transfers": 260.3
+              },
+              {
+                "hour": 8,
+                "transfers": 336.8
+              },
+              {
+                "hour": 9,
+                "transfers": 245.0
+              },
+              {
+                "hour": 10,
+                "transfers": 153.1
+              },
+              {
+                "hour": 11,
+                "transfers": 137.8
+              },
+              {
+                "hour": 12,
+                "transfers": 147.0
+              },
+              {
+                "hour": 13,
+                "transfers": 153.1
+              },
+              {
+                "hour": 14,
+                "transfers": 147.0
+              },
+              {
+                "hour": 15,
+                "transfers": 159.2
+              },
+              {
+                "hour": 16,
+                "transfers": 189.9
+              },
+              {
+                "hour": 17,
+                "transfers": 260.3
+              },
+              {
+                "hour": 18,
+                "transfers": 290.9
+              },
+              {
+                "hour": 19,
+                "transfers": 214.4
+              },
+              {
+                "hour": 20,
+                "transfers": 137.8
+              },
+              {
+                "hour": 21,
+                "transfers": 91.9
+              },
+              {
+                "hour": 22,
+                "transfers": 67.4
+              },
+              {
+                "hour": 23,
+                "transfers": 45.9
+              },
+              {
+                "hour": 24,
+                "transfers": 24.5
+              }
+            ]
+          },
+          {
+            "stop_id": "entrecampos",
+            "name": "Entrecampos",
+            "lat": 38.748,
+            "lon": -9.1486,
+            "transfers": 1800,
+            "worst_median_wait_min": 4,
+            "fragile": false,
+            "pairs": [
+              {
+                "from_operator": "rail",
+                "to_operator": "metro",
+                "transfers": 1800,
+                "median_wait_min": 4,
+                "p90_wait_min": 8
+              }
+            ],
+            "hourly": [
+              {
+                "hour": 5,
+                "transfers": 17.2
+              },
+              {
+                "hour": 6,
+                "transfers": 60.3
+              },
+              {
+                "hour": 7,
+                "transfers": 146.4
+              },
+              {
+                "hour": 8,
+                "transfers": 189.5
+              },
+              {
+                "hour": 9,
+                "transfers": 137.8
+              },
+              {
+                "hour": 10,
+                "transfers": 86.1
+              },
+              {
+                "hour": 11,
+                "transfers": 77.5
+              },
+              {
+                "hour": 12,
+                "transfers": 82.7
+              },
+              {
+                "hour": 13,
+                "transfers": 86.1
+              },
+              {
+                "hour": 14,
+                "transfers": 82.7
+              },
+              {
+                "hour": 15,
+                "transfers": 89.6
+              },
+              {
+                "hour": 16,
+                "transfers": 106.8
+              },
+              {
+                "hour": 17,
+                "transfers": 146.4
+              },
+              {
+                "hour": 18,
+                "transfers": 163.6
+              },
+              {
+                "hour": 19,
+                "transfers": 120.6
+              },
+              {
+                "hour": 20,
+                "transfers": 77.5
+              },
+              {
+                "hour": 21,
+                "transfers": 51.7
+              },
+              {
+                "hour": 22,
+                "transfers": 37.9
+              },
+              {
+                "hour": 23,
+                "transfers": 25.8
+              },
+              {
+                "hour": 24,
+                "transfers": 13.8
+              }
+            ]
+          }
+        ],
+        "flows": [
+          {
+            "from_stop_id": "reboleira",
+            "from_name": "Reboleira",
+            "from_lon": -9.223,
+            "from_lat": 38.758,
+            "to_stop_id": "marques",
+            "to_name": "Marquês de Pombal",
+            "to_lon": -9.15,
+            "to_lat": 38.7253,
+            "journeys": 2100
+          },
+          {
+            "from_stop_id": "cacilhas",
+            "from_name": "Cacilhas",
+            "from_lon": -9.148,
+            "from_lat": 38.688,
+            "to_stop_id": "baixa",
+            "to_name": "Baixa-Chiado",
+            "to_lon": -9.1395,
+            "to_lat": 38.7107,
+            "journeys": 2600
+          },
+          {
+            "from_stop_id": "barreiro",
+            "from_name": "Barreiro",
+            "from_lon": -9.079,
+            "from_lat": 38.657,
+            "to_stop_id": "terreiro",
+            "to_name": "Terreiro do Paço",
+            "to_lon": -9.1335,
+            "to_lat": 38.7075,
+            "journeys": 1900
+          },
+          {
+            "from_stop_id": "odivelas",
+            "from_name": "Odivelas",
+            "from_lon": -9.173,
+            "from_lat": 38.793,
+            "to_stop_id": "campogrande",
+            "to_name": "Campo Grande",
+            "to_lon": -9.1583,
+            "to_lat": 38.7597,
+            "journeys": 2300
+          },
+          {
+            "from_stop_id": "pragal",
+            "from_name": "Pragal",
+            "from_lon": -9.163,
+            "from_lat": 38.668,
+            "to_stop_id": "entrecampos",
+            "to_name": "Entrecampos",
+            "to_lon": -9.1486,
+            "to_lat": 38.748,
+            "journeys": 1700
+          },
+          {
+            "from_stop_id": "alges",
+            "from_name": "Algés",
+            "from_lon": -9.229,
+            "from_lat": 38.701,
+            "to_stop_id": "caisdosodre",
+            "to_name": "Cais do Sodré",
+            "to_lon": -9.1446,
+            "to_lat": 38.7063,
+            "journeys": 1500
+          },
+          {
+            "from_stop_id": "sacavem",
+            "from_name": "Sacavém",
+            "from_lon": -9.101,
+            "from_lat": 38.793,
+            "to_stop_id": "oriente",
+            "to_name": "Oriente",
+            "to_lon": -9.0994,
+            "to_lat": 38.7678,
+            "journeys": 1200
+          },
+          {
+            "from_stop_id": "seixal",
+            "from_name": "Seixal",
+            "from_lon": -9.102,
+            "from_lat": 38.64,
+            "to_stop_id": "caisdosodre",
+            "to_name": "Cais do Sodré",
+            "to_lon": -9.1446,
+            "to_lat": 38.7063,
+            "journeys": 900
+          },
+          {
+            "from_stop_id": "montijo",
+            "from_name": "Montijo",
+            "from_lon": -8.973,
+            "from_lat": 38.705,
+            "to_stop_id": "caisdosodre",
+            "to_name": "Cais do Sodré",
+            "to_lon": -9.1446,
+            "to_lat": 38.7063,
+            "journeys": 700
+          },
+          {
+            "from_stop_id": "pontinha",
+            "from_name": "Pontinha",
+            "from_lon": -9.197,
+            "from_lat": 38.7625,
+            "to_stop_id": "seterios",
+            "to_name": "Sete Rios",
+            "to_lon": -9.1686,
+            "to_lat": 38.7418,
+            "journeys": 1100
+          }
+        ],
+        "method": "A transfer = two entry taps by the same card within 60 minutes on different operators. Wait = minutes between the first leg's estimated arrival and the next tap."
+      }
+    },
+    "anomalies": {
+      "request": "GET /api/anomalies",
+      "status": 200,
+      "response": {
+        "alerts": [
+          {
+            "alert_id": "a1",
+            "stop_id": "oriente",
+            "name": "Oriente",
+            "lat": 38.7678,
+            "lon": -9.0994,
+            "date": "2026-09-01",
+            "hour": 18,
+            "observed": 7749.8,
+            "expected": 3090.9,
+            "deviation_pct": 150.7,
+            "robust_z": 6.8,
+            "direction": "above",
+            "hourly": [
+              {
+                "hour": 5,
+                "observed": 325.2,
+                "expected": 325.4
+              },
+              {
+                "hour": 6,
+                "observed": 1164.1,
+                "expected": 1138.8
+              },
+              {
+                "hour": 7,
+                "observed": 2658.4,
+                "expected": 2765.6
+              },
+              {
+                "hour": 8,
+                "observed": 3494.9,
+                "expected": 3578.9
+              },
+              {
+                "hour": 9,
+                "observed": 2591.3,
+                "expected": 2602.9
+              },
+              {
+                "hour": 10,
+                "observed": 1673.1,
+                "expected": 1626.8
+              },
+              {
+                "hour": 11,
+                "observed": 1477.9,
+                "expected": 1464.1
+              },
+              {
+                "hour": 12,
+                "observed": 1546.7,
+                "expected": 1561.7
+              },
+              {
+                "hour": 13,
+                "observed": 1580.1,
+                "expected": 1626.8
+              },
+              {
+                "hour": 14,
+                "observed": 1600.2,
+                "expected": 1561.7
+              },
+              {
+                "hour": 15,
+                "observed": 1701.3,
+                "expected": 1691.9
+              },
+              {
+                "hour": 16,
+                "observed": 1990.1,
+                "expected": 2017.2
+              },
+              {
+                "hour": 17,
+                "observed": 2675.7,
+                "expected": 2765.6
+              },
+              {
+                "hour": 18,
+                "observed": 7749.8,
+                "expected": 3090.9
+              },
+              {
+                "hour": 19,
+                "observed": 2316.3,
+                "expected": 2277.5
+              },
+              {
+                "hour": 20,
+                "observed": 1431.5,
+                "expected": 1464.1
+              },
+              {
+                "hour": 21,
+                "observed": 972.9,
+                "expected": 976.1
+              },
+              {
+                "hour": 22,
+                "observed": 729.8,
+                "expected": 715.8
+              },
+              {
+                "hour": 23,
+                "observed": 506.9,
+                "expected": 488.0
+              },
+              {
+                "hour": 24,
+                "observed": 253.5,
+                "expected": 260.3
+              }
+            ]
+          },
+          {
+            "alert_id": "a3",
+            "stop_id": "campogrande",
+            "name": "Campo Grande",
+            "lat": 38.7597,
+            "lon": -9.1583,
+            "date": "2026-09-03",
+            "hour": 17,
+            "observed": 4892.6,
+            "expected": 3090.9,
+            "deviation_pct": 58.3,
+            "robust_z": 4.4,
+            "direction": "above",
+            "hourly": [
+              {
+                "hour": 5,
+                "observed": 376.6,
+                "expected": 363.6
+              },
+              {
+                "hour": 6,
+                "observed": 1293.8,
+                "expected": 1272.7
+              },
+              {
+                "hour": 7,
+                "observed": 3083.3,
+                "expected": 3090.9
+              },
+              {
+                "hour": 8,
+                "observed": 3914.0,
+                "expected": 4000.0
+              },
+              {
+                "hour": 9,
+                "observed": 3023.8,
+                "expected": 2909.1
+              },
+              {
+                "hour": 10,
+                "observed": 1800.3,
+                "expected": 1818.2
+              },
+              {
+                "hour": 11,
+                "observed": 1651.4,
+                "expected": 1636.4
+              },
+              {
+                "hour": 12,
+                "observed": 1794.8,
+                "expected": 1745.5
+              },
+              {
+                "hour": 13,
+                "observed": 1758.7,
+                "expected": 1818.2
+              },
+              {
+                "hour": 14,
+                "observed": 1734.9,
+                "expected": 1745.5
+              },
+              {
+                "hour": 15,
+                "observed": 1915.5,
+                "expected": 1890.9
+              },
+              {
+                "hour": 16,
+                "observed": 2326.8,
+                "expected": 2254.5
+              },
+              {
+                "hour": 17,
+                "observed": 4892.6,
+                "expected": 3090.9
+              },
+              {
+                "hour": 18,
+                "observed": 3446.8,
+                "expected": 3454.5
+              },
+              {
+                "hour": 19,
+                "observed": 2588.3,
+                "expected": 2545.5
+              },
+              {
+                "hour": 20,
+                "observed": 1657.0,
+                "expected": 1636.4
+              },
+              {
+                "hour": 21,
+                "observed": 1083.9,
+                "expected": 1090.9
+              },
+              {
+                "hour": 22,
+                "observed": 776.6,
+                "expected": 800.0
+              },
+              {
+                "hour": 23,
+                "observed": 562.7,
+                "expected": 545.5
+              },
+              {
+                "hour": 24,
+                "observed": 293.5,
+                "expected": 290.9
+              }
+            ]
+          },
+          {
+            "alert_id": "a2",
+            "stop_id": "caisdosodre",
+            "name": "Cais do Sodré",
+            "lat": 38.7063,
+            "lon": -9.1446,
+            "date": "2026-08-31",
+            "hour": 8,
+            "observed": 1974.2,
+            "expected": 3789.5,
+            "deviation_pct": -47.9,
+            "robust_z": -4.1,
+            "direction": "below",
+            "hourly": [
+              {
+                "hour": 5,
+                "observed": 322.4,
+                "expected": 344.5
+              },
+              {
+                "hour": 6,
+                "observed": 1150.3,
+                "expected": 1205.7
+              },
+              {
+                "hour": 7,
+                "observed": 2846.5,
+                "expected": 2928.2
+              },
+              {
+                "hour": 8,
+                "observed": 1974.2,
+                "expected": 3789.5
+              },
+              {
+                "hour": 9,
+                "observed": 2549.4,
+                "expected": 2756.0
+              },
+              {
+                "hour": 10,
+                "observed": 1623.2,
+                "expected": 1722.5
+              },
+              {
+                "hour": 11,
+                "observed": 1432.8,
+                "expected": 1550.2
+              },
+              {
+                "hour": 12,
+                "observed": 1618.1,
+                "expected": 1653.6
+              },
+              {
+                "hour": 13,
+                "observed": 1654.4,
+                "expected": 1722.5
+              },
+              {
+                "hour": 14,
+                "observed": 1552.3,
+                "expected": 1653.6
+              },
+              {
+                "hour": 15,
+                "observed": 1649.2,
+                "expected": 1791.4
+              },
+              {
+                "hour": 16,
+                "observed": 2082.3,
+                "expected": 2135.9
+              },
+              {
+                "hour": 17,
+                "observed": 2801.8,
+                "expected": 2928.2
+              },
+              {
+                "hour": 18,
+                "observed": 3060.4,
+                "expected": 3272.7
+              },
+              {
+                "hour": 19,
+                "observed": 2211.4,
+                "expected": 2411.5
+              },
+              {
+                "hour": 20,
+                "observed": 1427.8,
+                "expected": 1550.2
+              },
+              {
+                "hour": 21,
+                "observed": 970.6,
+                "expected": 1033.5
+              },
+              {
+                "hour": 22,
+                "observed": 725.5,
+                "expected": 757.9
+              },
+              {
+                "hour": 23,
+                "observed": 504.0,
+                "expected": 516.7
+              },
+              {
+                "hour": 24,
+                "observed": 254.8,
+                "expected": 275.6
+              }
+            ]
+          },
+          {
+            "alert_id": "a5",
+            "stop_id": "seterios",
+            "name": "Sete Rios",
+            "lat": 38.7418,
+            "lon": -9.1686,
+            "date": "2026-09-04",
+            "hour": 19,
+            "observed": 974.7,
+            "expected": 1540.7,
+            "deviation_pct": -36.7,
+            "robust_z": -3.9,
+            "direction": "below",
+            "hourly": [
+              {
+                "hour": 5,
+                "observed": 209.3,
+                "expected": 220.1
+              },
+              {
+                "hour": 6,
+                "observed": 775.2,
+                "expected": 770.3
+              },
+              {
+                "hour": 7,
+                "observed": 1848.1,
+                "expected": 1870.8
+              },
+              {
+                "hour": 8,
+                "observed": 2373.7,
+                "expected": 2421.1
+              },
+              {
+                "hour": 9,
+                "observed": 1693.8,
+                "expected": 1760.8
+              },
+              {
+                "hour": 10,
+                "observed": 1042.7,
+                "expected": 1100.5
+              },
+              {
+                "hour": 11,
+                "observed": 956.7,
+                "expected": 990.4
+              },
+              {
+                "hour": 12,
+                "observed": 1043.9,
+                "expected": 1056.5
+              },
+              {
+                "hour": 13,
+                "observed": 1107.7,
+                "expected": 1100.5
+              },
+              {
+                "hour": 14,
+                "observed": 997.0,
+                "expected": 1056.5
+              },
+              {
+                "hour": 15,
+                "observed": 1101.3,
+                "expected": 1144.5
+              },
+              {
+                "hour": 16,
+                "observed": 1343.3,
+                "expected": 1364.6
+              },
+              {
+                "hour": 17,
+                "observed": 1876.2,
+                "expected": 1870.8
+              },
+              {
+                "hour": 18,
+                "observed": 1996.5,
+                "expected": 2090.9
+              },
+              {
+                "hour": 19,
+                "observed": 974.7,
+                "expected": 1540.7
+              },
+              {
+                "hour": 20,
+                "observed": 995.6,
+                "expected": 990.4
+              },
+              {
+                "hour": 21,
+                "observed": 651.5,
+                "expected": 660.3
+              },
+              {
+                "hour": 22,
+                "observed": 468.9,
+                "expected": 484.2
+              },
+              {
+                "hour": 23,
+                "observed": 313.6,
+                "expected": 330.1
+              },
+              {
+                "hour": 24,
+                "observed": 176.3,
+                "expected": 176.1
+              }
+            ]
+          },
+          {
+            "alert_id": "a4",
+            "stop_id": "pragal",
+            "name": "Pragal",
+            "lat": 38.668,
+            "lon": -9.163,
+            "date": "2026-09-02",
+            "hour": 7,
+            "observed": 1038.9,
+            "expected": 732.1,
+            "deviation_pct": 41.9,
+            "robust_z": 3.7,
+            "direction": "above",
+            "hourly": [
+              {
+                "hour": 5,
+                "observed": 85.3,
+                "expected": 86.1
+              },
+              {
+                "hour": 6,
+                "observed": 304.2,
+                "expected": 301.4
+              },
+              {
+                "hour": 7,
+                "observed": 1038.9,
+                "expected": 732.1
+              },
+              {
+                "hour": 8,
+                "observed": 930.9,
+                "expected": 947.4
+              },
+              {
+                "hour": 9,
+                "observed": 690.2,
+                "expected": 689.0
+              },
+              {
+                "hour": 10,
+                "observed": 418.3,
+                "expected": 430.6
+              },
+              {
+                "hour": 11,
+                "observed": 400.1,
+                "expected": 387.6
+              },
+              {
+                "hour": 12,
+                "observed": 417.3,
+                "expected": 413.4
+              },
+              {
+                "hour": 13,
+                "observed": 426.5,
+                "expected": 430.6
+              },
+              {
+                "hour": 14,
+                "observed": 403.2,
+                "expected": 413.4
+              },
+              {
+                "hour": 15,
+                "observed": 464.1,
+                "expected": 447.8
+              },
+              {
+                "hour": 16,
+                "observed": 541.1,
+                "expected": 534.0
+              },
+              {
+                "hour": 17,
+                "observed": 727.9,
+                "expected": 732.1
+              },
+              {
+                "hour": 18,
+                "observed": 801.0,
+                "expected": 818.2
+              },
+              {
+                "hour": 19,
+                "observed": 578.8,
+                "expected": 602.9
+              },
+              {
+                "hour": 20,
+                "observed": 386.0,
+                "expected": 387.6
+              },
+              {
+                "hour": 21,
+                "observed": 262.2,
+                "expected": 258.4
+              },
+              {
+                "hour": 22,
+                "observed": 195.9,
+                "expected": 189.5
+              },
+              {
+                "hour": 23,
+                "observed": 125.7,
+                "expected": 129.2
+              },
+              {
+                "hour": 24,
+                "observed": 68.4,
+                "expected": 68.9
+              }
+            ]
+          }
+        ],
+        "method": "Expected = median of the same stop and hour on the other weekdays. Flag when the robust z-score (median absolute deviation) exceeds 3.5."
+      }
+    },
+    "error_404": {
+      "request": "GET /api/stops/does-not-exist",
+      "status": 404,
+      "response": {
+        "detail": "unknown stop_id 'does-not-exist'"
+      }
+    },
+    "error_422": {
+      "request": "GET /api/hex?day=2025-01-01",
+      "status": 422,
+      "response": {
+        "detail": "day must be one of ['2026-08-31', '2026-09-01', '2026-09-02', '2026-09-03', '2026-09-04', '2026-09-05', '2026-09-06']"
+      }
+    }
+  }
+}
