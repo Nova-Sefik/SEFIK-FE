@@ -6,12 +6,16 @@ import { runTool } from '../live/api'
 import { useLiveData } from '../live/LiveDataContext'
 import { hourLabel } from '../live/utils'
 
+// Examples name a day and hour where the data is full: journey paths currently cover only part
+// of the week, so undated journey questions could land on an empty period.
 const STARTERS = [
-  'Show traffic through Campo Grande above 50 journeys',
-  'Is this hour busier than a typical weekday?',
+  'Show traffic through Campo Grande above 50 journeys on Mon 31 Aug at 18:00',
+  'Where did journeys go on Fri 4 Sep at 08:00?',
+  'Were journeys through Campo Grande on Fri 4 Sep at 06:00 above a typical weekday?',
+  'Was the network busier than a typical weekday on Wed 2 Sep at 08:00?',
+  'Which lines were most crowded on Tue 1 Sep at 08:00?',
   'Show the best direct routes',
-  'Where are lines most crowded right now?',
-  'What demand looks unusual?',
+  'What demand looked unusual this week?',
 ]
 
 const JOURNEY_TOOL = 'query_live_journey_traffic'
