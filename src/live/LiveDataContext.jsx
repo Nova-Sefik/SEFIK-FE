@@ -9,7 +9,7 @@ const LiveDataContext = createContext(null)
 
 // Places are {stop_id, name}; the backend resolves and filters, the browser only asks.
 export const EMPTY_JOURNEY = { origin: null, through: [], destination: null, any: [], match: 'contains', minVolume: 0, wholeDay: false }
-const PAGE = 50
+const ALL_PATHS_LIMIT = 10_000
 
 function storedFilters() {
   try {
@@ -41,7 +41,6 @@ export function LiveDataProvider({ children }) {
   const [selectedAlert, setSelectedAlert] = useState(null)
   const [whatif, setWhatif] = useState(0)
   const [journey, setJourneyState] = useState(EMPTY_JOURNEY)
-  const [journeyLimit, setJourneyLimit] = useState(PAGE)
   const [journeyView, setJourneyView] = useState('map')
   const [selectedPath, setSelectedPath] = useState(null)
   const [playing, setPlaying] = useState(false)
@@ -111,8 +110,8 @@ export function LiveDataProvider({ children }) {
     any: journey.any.map((place) => place.stop_id).join(','),
     match: journey.match,
     min_volume: journey.minVolume,
-    limit: journeyLimit,
-  }), [day, hour, journey, journeyLimit])
+    limit: ALL_PATHS_LIMIT,
+  }), [day, hour, journey])
   const journeyTraffic = useLiveQuery(
     `journey|${JSON.stringify(journeyParams)}`,
     () => liveApi.journeyTraffic(journeyParams),
@@ -120,10 +119,8 @@ export function LiveDataProvider({ children }) {
   )
   const setJourney = (update) => {
     setJourneyState((current) => ({ ...current, ...(typeof update === 'function' ? update(current) : update) }))
-    setJourneyLimit(PAGE)
     setSelectedPath(null)
   }
-  const showMorePaths = () => setJourneyLimit((current) => Math.min(500, current + PAGE))
   const stopDetail = useLiveQuery(
     `stop|${selectedStop}|${filterKey}|${hour}`,
     () => liveApi.stop(selectedStop, filters, hour),
@@ -166,7 +163,7 @@ export function LiveDataProvider({ children }) {
 
   const value = {
     meta, overview, hex, stops, anomalies, transfers, golden, stopDetail, scales,
-    journey, setJourney, journeyTraffic, showMorePaths, journeyView, setJourneyView, selectedPath, setSelectedPath,
+    journey, setJourney, journeyTraffic, journeyView, setJourneyView, selectedPath, setSelectedPath,
     filters, day, setDay: setDaySafe, hour, setHour, ops, setOps, toggleOperator, segment, setSegment,
     mode, setMode, layer, setLayer, selectedStop, setSelectedStop, openStop,
     selectedLine, setSelectedLine, selectedTransfer, setSelectedTransfer, selectedFlow, setSelectedFlow,

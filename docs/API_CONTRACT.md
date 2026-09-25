@@ -75,6 +75,15 @@ Returns a typical-weekday ranking that is independent of the day/hour explorer f
 ### `GET /api/anomalies[?day]` — alerts list
 Omit `day` for the whole week. `alerts[]` sorted by |robust_z| desc: {alert_id, stop_id, name, lat, lon, date, hour, observed, expected, deviation_pct, robust_z, direction "above"|"below", hourly[] {hour, observed, expected}}. Click an alert → set day+hour on the slider and fly to lat/lon. Mock headline: Oriente, Tue 1 Sep 18:00, +151 %.
 
+### `GET /api/journey-traffic` — directed journey paths
+Accepts `day`, optional `hour`, `origin`, comma-separated ordered `through`, `destination`, comma-separated `any`, `match=contains|exact`, `min_volume`, `compare`, `limit` (maximum 10,000) and `offset`. Paths are ordered tap locations, not physical vehicle routes. The main explorer requests all privacy-safe paths for its selected period. Counts, Sankey layers, coverage, applied filters and the current-versus-typical comparison are backend values.
+
+### `GET /api/compare` — selected hour versus typical
+Accepts `measure=stop_boardings|network_boardings|transfers|line_boardings`, `subject` where required, plus the live filters. `comparison.typical` is the backend median of the same hour on other fully covered days of the same type, excluding the selected day. The response includes the selected values, baseline dates and the hourly series used by the grey-background comparison chart.
+
+### `POST /api/planner` and `POST /api/tools/{name}`
+The AI planner and model-free presets run read-only tools in `carrolinha-BE`. Both return the executed tool context, including `allowed_charts`; `hour_vs_average` renders the backend comparison without calculating values in the browser.
+
 ### `GET /api/health`
 `{"ok": true, "provider": "mock"}` — use it to wake the Render instance.
 

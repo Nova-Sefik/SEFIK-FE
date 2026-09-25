@@ -97,10 +97,16 @@ export default function App() {
           <p className="mt-1 text-sm text-ink">{activeMode?.hint}</p>
           {overview.data && <p className="mt-1 text-[10px] text-ink-4">{integer.format(overview.data.kpis.boardings)} boardings in the filtered day</p>}
         </div>
-        <div className="p-4">
-          <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-ink-3">Operators</p>
-          <div className="flex flex-wrap gap-1.5">{(meta.data?.operators ?? []).map((operator) => { const active = ops.includes(operator.id); return <button key={operator.id} type="button" aria-pressed={active} onClick={() => toggleOperator(operator.id)} className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] ${active ? 'border-transparent bg-primary-soft text-primary-ink' : 'border-line text-ink-4'}`}><span className="h-2 w-2 rounded-full" style={{ background: active ? operator.color : '#bdc1c6' }} />{operator.name}</button> })}</div>
-        </div>
+        {mode === 'journeys' ? (
+          <div className="p-4 text-[11px] leading-5 text-ink-3">
+            Journey paths use the selected day and hour plus the path controls on the right. Operator and passenger-segment filters do not apply to this aggregate.
+          </div>
+        ) : (
+          <div className="p-4">
+            <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-ink-3">Operators</p>
+            <div className="flex flex-wrap gap-1.5">{(meta.data?.operators ?? []).map((operator) => { const active = ops.includes(operator.id); return <button key={operator.id} type="button" aria-pressed={active} onClick={() => toggleOperator(operator.id)} className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] ${active ? 'border-transparent bg-primary-soft text-primary-ink' : 'border-line text-ink-4'}`}><span className="h-2 w-2 rounded-full" style={{ background: active ? operator.color : '#bdc1c6' }} />{operator.name}</button> })}</div>
+          </div>
+        )}
       </aside>
 
       <main className="relative order-1 h-[58vh] lg:order-none lg:col-start-2 lg:row-start-3 lg:h-auto">

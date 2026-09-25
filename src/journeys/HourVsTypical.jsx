@@ -1,4 +1,4 @@
-import { Bar, CartesianGrid, Cell, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Area, Bar, CartesianGrid, Cell, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { compact, hourLabel, integer } from '../live/utils'
 
 // Renders a backend comparison block exactly: current, typical and the
@@ -55,15 +55,30 @@ export default function HourVsTypical({ comparison, hour, unit = 'journeys', com
               formatter={(value, name) => [value == null ? 'not available' : integer.format(value), name]}
               contentStyle={{ border: '1px solid #dadce0', borderRadius: 10, fontSize: 11 }}
             />
+            <Area
+              dataKey="typical"
+              name="Typical"
+              type="monotone"
+              fill="#dadce0"
+              fillOpacity={0.72}
+              stroke="#9aa0a6"
+              strokeWidth={1.5}
+              dot={false}
+              connectNulls={false}
+              isAnimationActive={false}
+            />
             <Bar dataKey="current" name="This day" radius={[3, 3, 0, 0]} isAnimationActive={false}>
               {data.map((item) => <Cell key={item.hour} fill={item.hour === selected ? '#1967d2' : item.complete ? '#aecbfa' : '#e8eaed'} />)}
             </Bar>
-            <Line dataKey="typical" name="Typical" type="monotone" stroke="#202124" strokeWidth={2} strokeDasharray="4 3" dot={false} connectNulls={false} isAnimationActive={false} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
+      <div className="flex items-center gap-4 text-[10px] text-ink-3">
+        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-4 rounded-sm bg-primary" />Selected day</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-4 rounded-sm bg-[#dadce0]" />Typical in the background</span>
+      </div>
       <p className="text-[10px] leading-4 text-ink-4">
-        Bars = this day (grey = hour not fully covered); dashed line = typical. {comparison.method}
+        Bars = this day (pale grey = hour not fully covered); the soft grey area behind them = typical. {comparison.method}
         {comparison.baseline_days.length > 0 && ` Compared with ${comparison.baseline_days.map((day) => day.date).join(', ')}.`}
       </p>
     </div>

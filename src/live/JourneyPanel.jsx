@@ -14,7 +14,7 @@ function Kpi({ value, label }) {
 }
 
 export default function JourneyPanel() {
-  const { journey, journeyTraffic, showMorePaths, selectedPath, setSelectedPath, hour } = useLiveData()
+  const { journey, journeyTraffic, selectedPath, setSelectedPath, hour } = useLiveData()
   const data = journeyTraffic.data
 
   return (
@@ -22,7 +22,7 @@ export default function JourneyPanel() {
       <header>
         <p className="text-[10px] font-medium uppercase tracking-wide text-primary-ink">Journey paths · {journey.wholeDay ? 'whole day' : hourLabel(hour)}</p>
         <h2 className="mt-1 text-lg font-medium text-ink">Traffic along a path</h2>
-        <p className="mt-1 text-xs leading-5 text-ink-3">Every journey counts by default. Add places to follow a directed path, or set a minimum volume.</p>
+        <p className="mt-1 text-xs leading-5 text-ink-3">Every privacy-safe path in the selected period is shown by default. Add places to follow a directed path, or set a minimum volume.</p>
       </header>
 
       <JourneyFilters />
@@ -50,9 +50,9 @@ export default function JourneyPanel() {
             <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-ink-3">Paths · busiest first</h3>
             <PathList paths={data.paths} selectedKey={selectedPath} onSelect={setSelectedPath} />
             {data.totals.shown_paths > data.paths.length && (
-              <button type="button" onClick={showMorePaths} disabled={journeyTraffic.fetching} className="mt-2 w-full rounded-full border border-line py-1.5 text-xs text-ink-2 hover:bg-subtle disabled:opacity-50">
-                Show more · {integer.format(data.paths.length)} of {integer.format(data.totals.shown_paths)}
-              </button>
+              <p className="mt-2 rounded-lg bg-warn-soft px-3 py-2 text-[11px] text-warn">
+                The backend returned {integer.format(data.paths.length)} of {integer.format(data.totals.shown_paths)} paths. Narrow the period or add a location filter to inspect the remainder.
+              </p>
             )}
           </section>
 
