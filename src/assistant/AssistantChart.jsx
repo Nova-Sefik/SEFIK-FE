@@ -208,7 +208,7 @@ export default function AssistantChart({ response, onViewChange, onTryPeriod }) 
   const summary = context.applied_filters?.human_summary
 
   return (
-    <section className="relative h-[calc(100vh-13rem)] min-h-[34rem] overflow-hidden rounded-3xl border border-line bg-surface p-4 sm:p-6">
+    <section className="relative h-full overflow-hidden rounded-3xl border border-line bg-surface p-4 sm:p-6">
       <div className="absolute left-4 right-4 top-4 z-20 flex items-center justify-between gap-2 sm:left-6 sm:right-6">
         <div className="flex min-w-0 items-center gap-2">
           <p className="hidden max-w-64 truncate rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-ink-2 sm:block" title={title}>
