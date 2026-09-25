@@ -224,7 +224,7 @@ function HourScrubber({ hour, onHour, disabled }) {
 }
 
 // One conversation block: the question, then the text answer on the left and its diagram on the right
-function Turn({ turn, onViewChange, onTryPeriod }) {
+function Turn({ turn, onViewChange, onTryPeriod, onRetry }) {
   const { response } = turn
   const applied = response?.context?.applied_filters ?? {}
   const summary = applied.human_summary
@@ -244,7 +244,8 @@ function Turn({ turn, onViewChange, onTryPeriod }) {
           {turn.status === 'error' && (
             <div className="text-sm leading-6 text-danger">
               {turn.error}
-              <p className="mt-1 text-xs text-ink-3">Nothing was invented to fill the gap. Try again, or rephrase the question.</p>
+              <p className="mt-1 text-xs text-ink-3">Nothing was invented to fill the gap.</p>
+              {turn.kind === 'ai' && <button type="button" onClick={() => onRetry(turn)} className="mt-2 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary-hover">Try again</button>}
             </div>
           )}
           {turn.updatedTo && <p className="mb-3 rounded-lg bg-warn-soft px-2.5 py-2 text-[11px] leading-4 text-warn">Chart updated to {turn.updatedTo}. {turn.kind === 'ai' ? 'The written answer below describes the original result.' : ''}</p>}
@@ -378,23 +379,33 @@ export default function AssistantPage() {
     setTurns((current) => current.map((turn) => (turn.id === id ? { ...turn, response: { ...turn.response, chart: { ...turn.response.chart, type } } } : turn)))
   }
 
-  const ask = async (value) => {
-    const next = value.trim()
-    if (!next || busy) return
+  // Ask the planner and fill block `id` with the answer (or the error)
+  const answerInto = async (id, text) => {
     // The model sees the recent questions and answers as plain text
     const conversation = turns
-      .filter((turn) => turn.kind === 'ai' && turn.response)
+      .filter((turn) => turn.kind === 'ai' && turn.response && turn.id !== id)
       .flatMap((turn) => [{ role: 'user', content: turn.question }, { role: 'assistant', content: turn.response.answer }])
       .slice(-8)
-    const id = addTurn({ kind: 'ai', question: next })
-    setQuestion('')
     try {
-      const result = await askPlanner(next, conversation, liveFilters)
+      const result = await askPlanner(text, conversation, liveFilters)
       syncFilters(result.context)
-      patchTurn(id, { status: 'done', response: { ...result, question: next, graphId: null } })
+      patchTurn(id, { status: 'done', response: { ...result, question: text, graphId: null } })
     } catch (requestError) {
       patchTurn(id, { status: 'error', error: requestError.message })
     }
+  }
+
+  const ask = (value) => {
+    const next = value.trim()
+    if (!next || busy) return
+    setQuestion('')
+    answerInto(addTurn({ kind: 'ai', question: next }), next)
+  }
+
+  const retry = (turn) => {
+    if (busy) return
+    patchTurn(turn.id, { status: 'loading', error: null })
+    answerInto(turn.id, turn.question)
   }
 
   const tabs = (className) => GRAPHS.map((graph) => (
@@ -433,7 +444,7 @@ export default function AssistantPage() {
             <Welcome onAsk={ask} disabled={busy} />
           </div>
         )}
-        {turns.map((turn) => <Turn key={turn.id} turn={turn} onViewChange={changeView} onTryPeriod={tryPeriod} />)}
+        {turns.map((turn) => <Turn key={turn.id} turn={turn} onViewChange={changeView} onTryPeriod={tryPeriod} onRetry={retry} />)}
         <div ref={feedEnd} />
       </div>
 
