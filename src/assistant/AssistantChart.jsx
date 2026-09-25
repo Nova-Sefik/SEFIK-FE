@@ -8,45 +8,27 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { ABOVE, FLOW_COLOR, FLOW_TINTS, GRID, MUTED, OPPORTUNITY_COLOR, OPPORTUNITY_LIGHT, fmt } from '../components/theme'
+import { ABOVE, FLOW_COLOR, GRID, MUTED, OPPORTUNITY_COLOR, OPPORTUNITY_LIGHT, fmt } from '../components/theme'
 import HourVsTypical from '../journeys/HourVsTypical'
 import JourneySankey from '../journeys/JourneySankey'
 import PathList from '../journeys/PathList'
-import JourneyLayers from '../overview/JourneyLayers'
-import AssistantTimeline from './AssistantTimeline'
+import { VIEW_LABELS, chartsFor } from './charts'
 import DirectionalMap from './DirectionalMap'
-import FeasibilityChart from './FeasibilityChart'
 
 const TITLES = {
-  mobility_map: 'Passenger movement and route directions',
   route_opportunities: 'Direct-link opportunities',
-  route_feasibility: 'Route feasibility comparison',
-  demand_supply: 'Direct demand versus supply comparison',
-  journey_layers: 'How journeys connect across modes',
+  demand_supply: 'Demand versus supply',
   anomalies: 'Observed demand versus same-time baseline',
-  passenger_flows: 'Strongest passenger flows',
   journey_path_traffic: 'Journeys along paths',
   hour_vs_average: 'This hour versus typical',
 }
 
-const INTENT_TITLES = {
+const MAP_TITLES = {
   route: 'Direct-link directions',
-  supply: 'Demand and supply by stop',
-  transfer: 'Transfer paths by location',
-  anomaly: 'Demand anomalies by stop',
-  flow: 'Passenger movement and traffic levels',
-  journey: 'Journey paths on the map',
-  compare: 'This hour versus typical',
-}
-
-const VIEWS = {
-  route: [{ type: 'mobility_map', label: 'Map' }, { type: 'route_opportunities', label: 'Bars' }, { type: 'route_feasibility', label: 'Feasibility' }],
-  supply: [{ type: 'mobility_map', label: 'Map' }, { type: 'demand_supply', label: 'Bars' }],
-  transfer: [{ type: 'mobility_map', label: 'Map' }, { type: 'journey_layers', label: 'Sankey' }],
-  anomaly: [{ type: 'mobility_map', label: 'Map' }, { type: 'anomalies', label: 'Bars' }],
-  flow: [{ type: 'mobility_map', label: 'Map' }, { type: 'passenger_flows', label: 'Bars' }],
-  journey: [{ type: 'mobility_map', label: 'Map' }, { type: 'journey_path_traffic', label: 'Paths' }, { type: 'hour_vs_average', label: 'vs typical' }],
-  compare: [{ type: 'hour_vs_average', label: 'vs typical' }],
+  supply: 'Demand by stop',
+  transfer: 'Interchanges and transfer waits',
+  anomaly: 'Unusual stop-hours',
+  journey: 'Where journeys go',
 }
 
 const COMPARE_UNITS = { stop_boardings: 'boardings', network_boardings: 'boardings', line_boardings: 'boardings', transfers: 'transfers' }
@@ -166,41 +148,25 @@ function AnomalyChart({ evidence }) {
   )
 }
 
-function FlowChart({ evidence }) {
-  const data = evidence.slice(0, 9).map((row) => ({ ...row, label: `${row.from} → ${row.to}` }))
-  return (
-    <HorizontalBars
-      data={data}
-      labelWidth={180}
-      bars={[
-        { dataKey: 'observed', name: 'Observed', fill: FLOW_COLOR, stackId: 'evidence' },
-        { dataKey: 'strongly_inferred', name: 'Strongly inferred', fill: FLOW_TINTS[1], stackId: 'evidence' },
-        { dataKey: 'weakly_inferred', name: 'Weakly inferred', fill: FLOW_TINTS[2], stackId: 'evidence' },
-      ]}
-    />
-  )
-}
-
 function EmptyGraph({ limitations }) {
   return (
     <div className="flex h-full items-center justify-center px-6 text-center">
       <div className="max-w-lg">
-        <p className="text-sm font-medium text-ink-2">No evidence matches this combination.</p>
-        <p className="mt-2 text-xs leading-5 text-ink-3">Try widening the locations, modes, lines, dates, or time window.</p>
+        <p className="text-sm font-medium text-ink-2">Nothing matches these filters.</p>
+        <p className="mt-2 text-xs leading-5 text-ink-3">Try another day or hour, fewer path stops, or a lower minimum volume.</p>
         {limitations?.map((item) => <p key={item} className="mt-2 text-[11px] leading-4 text-warn">{item}</p>)}
       </div>
     </div>
   )
 }
 
-export default function AssistantChart({ response, filterLabel, filters, onFiltersChange, onViewChange }) {
+export default function AssistantChart({ response, onViewChange }) {
+  const { context } = response
   const type = response.chart.type
-  const evidence = response.context.evidence
-  const limitations = response.context.filter_limitations
-  const intent = response.context.intent === 'limits' ? 'route' : response.context.intent
-  const views = VIEWS[intent] ?? []
-  const title = type === 'mobility_map' ? (INTENT_TITLES[intent] ?? TITLES[type]) : TITLES[type]
-  const supportsTimeline = !['transfer', 'journey', 'compare'].includes(intent) && type !== 'route_feasibility'
+  const evidence = context.evidence ?? []
+  const views = chartsFor(context)
+  const title = type === 'mobility_map' ? (MAP_TITLES[context.intent] ?? 'Map') : TITLES[type]
+  const summary = context.applied_filters?.human_summary
 
   return (
     <section className="relative h-[calc(100vh-13rem)] min-h-[34rem] overflow-hidden rounded-3xl border border-line bg-surface p-4 sm:p-6">
@@ -213,53 +179,45 @@ export default function AssistantChart({ response, filterLabel, filters, onFilte
             <div className="flex shrink-0 rounded-full border border-line bg-surface p-0.5 shadow-card" aria-label="Choose graph or map view">
               {views.map((view) => (
                 <button
-                  key={view.type}
+                  key={view}
                   type="button"
-                  onClick={() => onViewChange(view.type)}
-                  className={`rounded-full px-3 py-1 text-[10px] font-medium transition ${type === view.type ? 'bg-primary text-white' : 'text-ink-3 hover:bg-subtle hover:text-ink'}`}
+                  onClick={() => onViewChange(view)}
+                  className={`rounded-full px-3 py-1 text-[10px] font-medium transition ${type === view ? 'bg-primary text-white' : 'text-ink-3 hover:bg-subtle hover:text-ink'}`}
                 >
-                  {view.label}
+                  {VIEW_LABELS[view]}
                 </button>
               ))}
             </div>
           )}
         </div>
-        <p className="hidden max-w-[45%] truncate rounded-full border border-line bg-surface px-3 py-1 text-[10px] text-ink-3 md:block" title={filterLabel}>
-          {filterLabel}
-        </p>
+        {summary && (
+          <p className="hidden max-w-[45%] truncate rounded-full border border-line bg-surface px-3 py-1 text-[10px] text-ink-3 md:block" title={summary}>
+            {summary}
+          </p>
+        )}
       </div>
-      <div className={`h-full pt-8 ${supportsTimeline ? 'pb-16' : ''}`}>
-        {!evidence.length && <EmptyGraph limitations={limitations} />}
+      <div className="h-full pt-8">
+        {!evidence.length && type !== 'hour_vs_average' && <EmptyGraph limitations={context.filter_limitations} />}
         {evidence.length > 0 && type === 'mobility_map' && (
-          <DirectionalMap evidence={evidence} intent={intent} overlays={response.mapOverlays ?? []} />
+          <DirectionalMap evidence={evidence} intent={context.intent} overlays={response.mapOverlays ?? []} />
         )}
         {evidence.length > 0 && type === 'route_opportunities' && <RouteChart evidence={evidence} />}
-        {type === 'route_feasibility' && <FeasibilityChart rows={response.feasibility ?? []} />}
         {evidence.length > 0 && type === 'demand_supply' && <SupplyChart evidence={evidence} />}
-        {evidence.length > 0 && type === 'journey_layers' && (
-          <div className="h-full overflow-y-auto">
-            <JourneyLayers paths={evidence} locationFilter={false} />
-          </div>
-        )}
         {evidence.length > 0 && type === 'anomalies' && <AnomalyChart evidence={evidence} />}
-        {evidence.length > 0 && type === 'passenger_flows' && <FlowChart evidence={evidence} />}
-        {evidence.length > 0 && type === 'journey_path_traffic' && <JourneyTraffic context={response.context} />}
-        {type === 'hour_vs_average' && response.context.comparison && (
+        {evidence.length > 0 && type === 'journey_path_traffic' && <JourneyTraffic context={context} />}
+        {type === 'hour_vs_average' && (context.comparison ? (
           <div className="h-full overflow-y-auto pr-1">
-            <HourVsTypical comparison={response.context.comparison} unit={COMPARE_UNITS[response.context.measure] ?? 'journeys'} />
+            <HourVsTypical comparison={context.comparison} unit={COMPARE_UNITS[context.measure] ?? 'journeys'} />
           </div>
-        )}
+        ) : <EmptyGraph limitations={context.filter_limitations} />)}
       </div>
       {type === 'demand_supply' && evidence.length > 0 && (
-        <p className="absolute bottom-16 left-6 right-6 text-center text-[10px] text-ink-4">
-          {evidence[0]?.measure === 'boardings_vs_expected'
-            ? 'Live backend comparison: observed boardings versus the same-time expected baseline. Expected is not vehicle capacity.'
-            : evidence[0]?.measure === 'estimated_load_vs_places'
-              ? 'Live backend comparison: estimated peak on-board load versus places offered. Load is inferred, not measured occupancy.'
-              : 'Demand = validations per scheduled departure · Supply = nominal vehicle capacity · This is a pressure proxy, not measured occupancy.'}
+        <p className="absolute bottom-4 left-6 right-6 text-center text-[10px] text-ink-4">
+          {evidence[0]?.measure === 'estimated_load_vs_places'
+            ? 'Estimated peak on-board load versus places offered. Load is inferred from boardings, not measured occupancy.'
+            : 'Observed boardings versus the same-time expected baseline. Expected is not vehicle capacity.'}
         </p>
       )}
-      {supportsTimeline && <AssistantTimeline filters={filters} onChange={onFiltersChange} />}
     </section>
   )
 }

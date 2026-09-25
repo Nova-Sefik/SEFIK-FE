@@ -45,7 +45,7 @@ The browser does not choose and send one evidence table to OpenAI. The gateway o
 
 The browser also sends `live_filters` containing the explorer's current `day`, `hour`, `ops`, and `segment`. Empty arguments in a `query_live_*` call retain those values. `PULSO_API_URL` configures the server-side backend URL; it should normally match the browser's `VITE_API_URL`.
 
-The model must call at least one query tool before answering. It may call multiple tools for comparisons. `query_live_*` tools execute against the backend configured by `PULSO_API_URL`; the remaining aggregate tools use `src/data/demand.json` and `src/data/overview.json`. The gateway returns the selected tool result to the browser as the trusted graph context.
+The model must call at least one query tool before answering. It may call multiple tools for comparisons. Every tool runs inside the backend against its own data; the frontend holds no data files. The backend returns the selected tool result to the browser as the trusted graph context.
 
 For “best route”, “golden route”, projected direct-line demand, time-saving, or network-wide direct-route questions, `query_live_golden_routes` is the authoritative primary analysis. Its ranking, directional volumes, percentile, headway, and estimates come directly from `/api/golden`; neither the gateway nor browser recalculates them. The model may explain or recommend an investigation but cannot replace those values.
 

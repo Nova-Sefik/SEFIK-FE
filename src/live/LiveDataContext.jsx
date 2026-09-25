@@ -167,7 +167,7 @@ export function LiveDataProvider({ children }) {
   const value = {
     meta, overview, hex, stops, anomalies, transfers, golden, stopDetail, scales,
     journey, setJourney, journeyTraffic, showMorePaths, journeyView, setJourneyView, selectedPath, setSelectedPath,
-    filters, day, setDay: setDaySafe, hour, setHour, ops, toggleOperator, segment, setSegment,
+    filters, day, setDay: setDaySafe, hour, setHour, ops, setOps, toggleOperator, segment, setSegment,
     mode, setMode, layer, setLayer, selectedStop, setSelectedStop, openStop,
     selectedLine, setSelectedLine, selectedTransfer, setSelectedTransfer, selectedFlow, setSelectedFlow,
     selectedGolden, setSelectedGolden,
