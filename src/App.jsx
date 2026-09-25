@@ -7,13 +7,29 @@ import { useLiveData } from './live/LiveDataContext'
 import { hourLabel, integer } from './live/utils'
 
 const MODES = [
-  { id: 'demand', label: 'Demand', hint: 'Where are people boarding?' },
-  { id: 'load', label: 'Load vs capacity', hint: 'Where is service under pressure?' },
-  { id: 'anomalies', label: 'Anomalies', hint: 'What is different from expected?' },
-  { id: 'transfers', label: 'Transfers', hint: 'Where do journeys change operator?' },
-  { id: 'golden', label: 'Best routes', hint: 'Where would a direct line save the most time?' },
-  { id: 'journeys', label: 'Journey paths', hint: 'Where do journeys go, and along which paths?' },
-]
+  { id: "demand", label: "Demand", hint: "Where are people boarding?" },
+  {
+    id: "load",
+    label: "Load vs capacity",
+    hint: "Where is service under pressure?",
+  },
+  {
+    id: "anomalies",
+    label: "Anomalies",
+    hint: "What is different from expected?",
+  },
+  {
+    id: "transfers",
+    label: "Transfers",
+    hint: "Where do journeys change operator?",
+  },
+  {
+    id: "golden",
+    label: "Best routes",
+    hint: "Where would a direct line save the most time?",
+  },
+  // { id: 'journeys', label: 'Journey paths', hint: 'Where do journeys go, and along which paths?' },
+];
 
 function Segmented({ options, value, onChange, label, small = false }) {
   return (
