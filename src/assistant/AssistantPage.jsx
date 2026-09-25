@@ -72,6 +72,32 @@ function PlannerLoading({ question }) {
   )
 }
 
+// First screen: invite a question instead of guessing a graph for whatever filters were saved
+function Welcome({ onAsk, disabled }) {
+  return (
+    <section className="flex h-[calc(100vh-13rem)] min-h-[34rem] items-center justify-center rounded-3xl border border-line bg-surface p-6">
+      <div className="max-w-xl text-center">
+        <p className="text-2xl font-medium text-ink">Hello, I’m the Carrolinha planning assistant</p>
+        <p className="mt-3 text-sm leading-6 text-ink-3">
+          Ask me anything about how people moved around the Lisbon area in the week of 31 August–6 September 2026.
+          I’ll pick the right live data, draw the chart, and explain what it shows.
+        </p>
+        <div className="mt-5 flex flex-wrap justify-center gap-2">
+          {STARTERS.map((prompt) => (
+            <button key={prompt} type="button" disabled={disabled} onClick={() => onAsk(prompt)} className="rounded-full border border-primary/30 bg-primary-soft px-3 py-1.5 text-xs text-primary-ink hover:bg-primary-soft-2 disabled:opacity-50">
+              {prompt}
+            </button>
+          ))}
+        </div>
+        <p className="mt-6 text-xs leading-5 text-ink-4">
+          I can look at stop demand, crowded lines, transfers and waits, unusual activity, the best direct routes,
+          journeys along a path, and how an hour compares with a typical day. Or open a ready-made view from the tabs above.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 function GraphLoading({ label }) {
   return (
     <section className="flex h-[calc(100vh-13rem)] min-h-[34rem] items-center justify-center rounded-3xl border border-line bg-surface p-6" role="status" aria-live="polite">
@@ -106,12 +132,12 @@ export default function AssistantPage() {
   const dayLabel = live.meta.data?.days?.find((item) => item.date === live.day)?.label ?? live.day
   const busy = loading || Boolean(graphLoading)
 
-  const runGraph = async ({ tool, args, chart, graphId, label }) => {
+  const runGraph = async ({ tool, args, chart, graphId, label, filters = liveFilters }) => {
     setGraphLoading(label)
     setShowAnswer(false)
     setError(null)
     try {
-      const context = await runTool(tool, args, liveFilters)
+      const context = await runTool(tool, args, filters)
       setResponse({ chart: { type: chart }, context, graphId, question: label, followups: STARTERS })
     } catch (requestError) {
       setError({ source: 'graph', message: requestError.message })
@@ -125,20 +151,25 @@ export default function AssistantPage() {
     runGraph({ tool: graph.tool, args, chart: graph.chart, graphId: graph.id, label: graph.label })
   }
 
-  // Re-run whatever is on screen (preset or AI answer) with the current live filters
-  const rerun = () => {
+  // Re-run whatever is on screen (preset or AI answer) with the current live filters,
+  // optionally jumping to another day and hour
+  const rerun = (period = null) => {
     const tool = response?.context?.tool
     if (!tool) return
     const args = Object.fromEntries(Object.entries(tool.args ?? {}).filter(([key]) => !LIVE_KEYS.includes(key)))
-    if (tool.name === JOURNEY_TOOL) Object.assign(args, journeyArgs(live.journey, tool.args?.limit ?? 50))
-    runGraph({ tool: tool.name, args, chart: response.chart.type, graphId: response.graphId, label: 'the updated graph' })
+    if (tool.name === JOURNEY_TOOL) Object.assign(args, journeyArgs(live.journey, tool.args?.limit ?? 50), period ? { whole_day: false } : {})
+    runGraph({
+      tool: tool.name, args, chart: response.chart.type, graphId: response.graphId, label: 'the updated graph',
+      filters: period ? { ...liveFilters, day: period.date, hour: period.hour } : liveFilters,
+    })
   }
 
-  useEffect(() => {
-    selectGraph(GRAPHS[0])
-    // Load the first preset once; later runs are explicit
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const tryPeriod = (period) => {
+    live.setDay(period.date)
+    live.setHour(period.hour)
+    if (live.journey.wholeDay) live.setJourney({ wholeDay: false })
+    rerun(period)
+  }
 
   const openFilters = () => {
     filtersAtOpen.current = filterKey
@@ -232,8 +263,9 @@ export default function AssistantPage() {
         <div className="mb-2 flex gap-1 overflow-x-auto md:hidden">{tabs('border border-line')}</div>
         <div className="min-h-0 flex-1">
           {loading ? <PlannerLoading question={pendingQuestion} />
-            : graphLoading || !response ? <GraphLoading label={graphLoading || 'the graph'} />
-              : <AssistantChart response={response} onViewChange={selectView} />}
+            : graphLoading ? <GraphLoading label={graphLoading} />
+              : !response ? <Welcome onAsk={ask} disabled={busy} />
+                : <AssistantChart response={response} onViewChange={selectView} onTryPeriod={tryPeriod} />}
         </div>
       </div>
 
@@ -298,7 +330,7 @@ export default function AssistantPage() {
             <span>Live filters · {dayLabel} · {hourLabel(live.hour)} · {live.ops.length} operator{live.ops.length === 1 ? '' : 's'} · {live.segment === 'all' ? 'all passengers' : live.segment}</span>
             <button type="button" onClick={openFilters} className="text-primary-ink hover:underline">Change filters</button>
           </div>
-          <div className="mb-2 flex gap-2 overflow-x-auto pb-1">
+          <div className={`mb-2 flex gap-2 overflow-x-auto pb-1 ${response ? '' : 'hidden'}`}>
             {prompts.map((prompt) => (
               <button
                 key={prompt}

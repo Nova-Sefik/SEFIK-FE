@@ -12,6 +12,9 @@ import { ABOVE, FLOW_COLOR, GRID, MUTED, OPPORTUNITY_COLOR, OPPORTUNITY_LIGHT, f
 import HourVsTypical from '../journeys/HourVsTypical'
 import JourneySankey from '../journeys/JourneySankey'
 import PathList from '../journeys/PathList'
+import { coverageSuggestions, formatHours } from '../journeys/coverage'
+import { useLiveData } from '../live/LiveDataContext'
+import { hourLabel } from '../live/utils'
 import { VIEW_LABELS, chartsFor } from './charts'
 import DirectionalMap from './DirectionalMap'
 
@@ -148,19 +151,55 @@ function AnomalyChart({ evidence }) {
   )
 }
 
-function EmptyGraph({ limitations }) {
+// Friendly explanation instead of a bare error when a query returns nothing
+function NoData({ context, onTryPeriod }) {
+  const { meta } = useLiveData()
+  const applied = context.applied_filters ?? {}
+  const coverage = context.journey?.coverage
+  const dayLabel = (date) => meta.data?.days?.find((item) => item.date === date)?.label ?? date
+
+  if (context.intent === 'journey' && coverage && !coverage.complete) {
+    const suggestions = coverageSuggestions(coverage, applied.day, applied.hour)
+    return (
+      <div className="flex h-full items-center justify-center px-6 text-center">
+        <div className="max-w-lg">
+          <p className="text-base font-medium text-ink">No journey data for {dayLabel(applied.day)}{applied.hour != null ? ` at ${hourLabel(applied.hour)}` : ''} yet</p>
+          <p className="mt-2 text-sm leading-6 text-ink-3">
+            Journey paths are built from part of this week’s raw validation files, and this period isn’t covered.
+            {coverage.complete_hours.length ? ` On ${dayLabel(applied.day)} they cover ${formatHours(coverage.complete_hours)}.` : ` ${dayLabel(applied.day)} has no fully covered hours.`}
+          </p>
+          {suggestions.length > 0 && (
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {suggestions.map((item) => (
+                <button key={`${item.date}-${item.hour}`} type="button" onClick={() => onTryPeriod?.(item)} className="rounded-full border border-primary/40 bg-primary-soft px-3 py-1.5 text-xs font-medium text-primary-ink hover:bg-primary-soft-2">
+                  Show {dayLabel(item.date)} {hourLabel(item.hour)}
+                </button>
+              ))}
+            </div>
+          )}
+          <p className="mt-4 text-xs text-ink-4">Stop demand, crowded lines, transfers and unusual activity cover the whole week.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-full items-center justify-center px-6 text-center">
       <div className="max-w-lg">
-        <p className="text-sm font-medium text-ink-2">Nothing matches these filters.</p>
-        <p className="mt-2 text-xs leading-5 text-ink-3">Try another day or hour, fewer path stops, or a lower minimum volume.</p>
-        {limitations?.map((item) => <p key={item} className="mt-2 text-[11px] leading-4 text-warn">{item}</p>)}
+        <p className="text-base font-medium text-ink">Nothing to show{applied.human_summary ? ` for ${applied.human_summary}` : ''}</p>
+        <p className="mt-2 text-sm leading-6 text-ink-3">Try another day or hour, fewer path stops, or a lower minimum volume. You can also just ask a question below.</p>
+        {context.filter_limitations?.length > 0 && (
+          <details className="mt-3 text-left text-[11px] leading-4 text-ink-4">
+            <summary className="cursor-pointer text-center text-ink-3">Why might this be empty?</summary>
+            <ul className="mt-2 list-disc space-y-1 pl-4">{context.filter_limitations.map((item) => <li key={item}>{item}</li>)}</ul>
+          </details>
+        )}
       </div>
     </div>
   )
 }
 
-export default function AssistantChart({ response, onViewChange }) {
+export default function AssistantChart({ response, onViewChange, onTryPeriod }) {
   const { context } = response
   const type = response.chart.type
   const evidence = context.evidence ?? []
@@ -197,7 +236,7 @@ export default function AssistantChart({ response, onViewChange }) {
         )}
       </div>
       <div className="h-full pt-8">
-        {!evidence.length && type !== 'hour_vs_average' && <EmptyGraph limitations={context.filter_limitations} />}
+        {!evidence.length && type !== 'hour_vs_average' && <NoData context={context} onTryPeriod={onTryPeriod} />}
         {evidence.length > 0 && type === 'mobility_map' && (
           <DirectionalMap evidence={evidence} intent={context.intent} overlays={response.mapOverlays ?? []} />
         )}
@@ -209,7 +248,7 @@ export default function AssistantChart({ response, onViewChange }) {
           <div className="h-full overflow-y-auto pr-1">
             <HourVsTypical comparison={context.comparison} unit={COMPARE_UNITS[context.measure] ?? 'journeys'} />
           </div>
-        ) : <EmptyGraph limitations={context.filter_limitations} />)}
+        ) : <NoData context={context} onTryPeriod={onTryPeriod} />)}
       </div>
       {type === 'demand_supply' && evidence.length > 0 && (
         <p className="absolute bottom-4 left-6 right-6 text-center text-[10px] text-ink-4">

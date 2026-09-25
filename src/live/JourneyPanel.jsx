@@ -1,5 +1,6 @@
 import HourVsTypical from '../journeys/HourVsTypical'
 import JourneyFilters from '../journeys/JourneyFilters'
+import { coverageSuggestions, formatHours } from '../journeys/coverage'
 import PathList from '../journeys/PathList'
 import { useLiveData } from './LiveDataContext'
 import { compact, hourLabel, integer } from './utils'
@@ -14,7 +15,9 @@ function Kpi({ value, label }) {
 }
 
 export default function JourneyPanel() {
-  const { journey, journeyTraffic, selectedPath, setSelectedPath, hour } = useLiveData()
+  const { meta, journey, setJourney, journeyTraffic, selectedPath, setSelectedPath, day, setDay, hour, setHour } = useLiveData()
+  const dayLabel = (date) => meta.data?.days?.find((item) => item.date === date)?.label ?? date
+  const jumpTo = (period) => { setDay(period.date); setHour(period.hour); if (journey.wholeDay) setJourney({ wholeDay: false }) }
   const data = journeyTraffic.data
 
   return (
@@ -33,7 +36,18 @@ export default function JourneyPanel() {
       {data && (
         <>
           <p className="text-[11px] text-ink-3">{data.applied_filters.human_summary}</p>
-          {!data.coverage.complete && <p className="rounded-lg bg-warn-soft px-3 py-2 text-[11px] leading-4 text-warn">This period is not fully covered by the source validation files, so counts are incomplete. Fully covered hours today: {data.coverage.complete_hours.length ? data.coverage.complete_hours.map(hourLabel).join(', ') : 'none'}.</p>}
+          {!data.coverage.complete && (
+            <div className="rounded-lg bg-warn-soft px-3 py-2 text-[11px] leading-4 text-warn">
+              <p>Journey paths are built from part of this week’s raw files, and this period isn’t fully covered, so counts are incomplete or empty. {data.coverage.complete_hours.length ? `${dayLabel(day)} is covered ${formatHours(data.coverage.complete_hours)}.` : `${dayLabel(day)} has no fully covered hours.`}</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {coverageSuggestions(data.coverage, day, journey.wholeDay ? null : hour).map((item) => (
+                  <button key={`${item.date}-${item.hour}`} type="button" onClick={() => jumpTo(item)} className="rounded-full bg-surface px-2.5 py-1 text-[10px] font-medium text-primary-ink hover:bg-primary-soft">
+                    {dayLabel(item.date)} {hourLabel(item.hour)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <section className="grid grid-cols-2 gap-2">
             <Kpi value={integer.format(data.totals.shown_volume)} label={`journeys on ${integer.format(data.totals.shown_paths)} listed paths`} />
             <Kpi value={data.totals.matched_volume == null ? `< ${data.privacy_min}` : integer.format(data.totals.matched_volume)} label="journeys match the filters" />
